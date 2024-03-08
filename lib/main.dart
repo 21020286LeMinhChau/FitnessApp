@@ -1,4 +1,5 @@
 import 'package:fitness/view/on_boarding/on_boarding_view.dart';
+import 'package:fitness/view/on_boarding/started_view.dart';
 import 'package:flutter/material.dart';
 import 'common/color_extension.dart';
 
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
         primaryColor: TColor.primaryColor1,
         fontFamily: "Poppins",
       ),
-      home: const OnBoardingView(),
+      home: const StartedView(),
     );
   }
 }
