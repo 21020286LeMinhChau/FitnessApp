@@ -278,7 +278,6 @@ class _PhotoProgressViewState extends State<PhotoProgressView> {
                     ],
                   ),
                 ),
-
                 ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   physics: const NeverScrollableScrollPhysics(),
@@ -329,20 +328,6 @@ class _PhotoProgressViewState extends State<PhotoProgressView> {
                     );
                   }),
                 ),
-                // Container(
-                //   width: double.maxFinite,
-                //   margin:
-                //       const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                //   padding: const EdgeInsets.all(20),
-                //   decoration: BoxDecoration(
-                //       gradient: LinearGradient(
-                //         colors: [
-                //           TColor.secondaryColor2.withOpacity(0.4),
-                //           TColor.secondaryColor1.withOpacity(0.4)
-                //         ],
-                //       ),
-                //       borderRadius: BorderRadius.circular(20)),
-                // ),
               ],
             ),
             SizedBox(

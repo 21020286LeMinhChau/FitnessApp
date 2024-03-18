@@ -45,10 +45,13 @@ android {
         applicationId "com.example.fitness"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion flutter.minSdkVersion
+        // minSdkVersion flutter.minSdkVersion
+        minSdkVersion 20
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        // resValue "string", "API_KEY", "\"${System.getenv('API_KEY')}\""
+        project(':flutter_config').projectDir.getPath() + "/dotenv.gradle"
     }
 
     buildTypes {
