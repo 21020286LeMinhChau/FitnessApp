@@ -1,10 +1,12 @@
 import 'package:fitness/view/main_tab/main_tab_view.dart';
-import 'package:fitness/view/on_boarding/on_boarding_view.dart';
-import 'package:fitness/view/on_boarding/started_view.dart';
 import 'package:flutter/material.dart';
 import 'common/color_extension.dart';
+import 'package:flutter_config/flutter_config.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // Required by FlutterConfig
+  await FlutterConfig.loadEnvVariables();
+
   runApp(const MyApp());
 }
 
