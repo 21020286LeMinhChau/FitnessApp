@@ -5,7 +5,6 @@ import 'package:fitness/common_widget/icon_title_next_row.dart';
 import 'package:fitness/common_widget/round_button.dart';
 import 'package:fitness/view/photo_progress/result_view.dart';
 import 'package:flutter/material.dart';
-import 'package:fitness/common_widget/icon_title_next_row.dart';
 
 class ComparisonView extends StatefulWidget {
   const ComparisonView({super.key});

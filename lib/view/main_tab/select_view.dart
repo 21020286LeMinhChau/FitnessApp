@@ -1,23 +1,33 @@
 import 'package:fitness/common/color_extension.dart';
+import 'package:fitness/common_widget/round_button.dart';
+import 'package:fitness/view/meal_planner/meal_planner_view.dart';
 import 'package:flutter/material.dart';
 
-class SelectView extends StatefulWidget {
+class SelectView extends StatelessWidget {
   const SelectView({super.key});
 
   @override
-  State<SelectView> createState() => _SelectViewState();
-}
-
-class _SelectViewState extends State<SelectView> {
-  @override
   Widget build(BuildContext context) {
+    var media = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: TColor.white,
-      body: Container(
-        padding: EdgeInsets.all(50),
-        width: 400,
-        decoration: BoxDecoration(border: Border.all()),
-        child: Text(overflow: TextOverflow.ellipsis, 'SelectView'),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            RoundButton(
+                title: "Meal Planner",
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const MealPlannerView()));
+                  const SizedBox(
+                    height: 15,
+                  );
+                }),
+          ],
+        ),
       ),
     );
   }

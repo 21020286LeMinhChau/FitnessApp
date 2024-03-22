@@ -1,12 +1,16 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+// import 'dart:collection';
+
 import 'package:fitness/common/color_extension.dart';
 import 'package:fitness/common_widget/tab_button.dart';
 import 'package:fitness/view/home/home_view.dart';
+import 'package:fitness/view/main_tab/select_view.dart';
 import 'package:fitness/view/photo_progress/photo_progress_view.dart';
 import 'package:fitness/view/profile/profile_view.dart';
 import 'package:fitness/view/workout_tracker/workout_tracker_view.dart';
 import 'package:flutter/material.dart';
+import 'package:fitness/view/running/map_view.dart';
 
 class MainTabView extends StatefulWidget {
   const MainTabView({super.key});
@@ -15,8 +19,10 @@ class MainTabView extends StatefulWidget {
   State<MainTabView> createState() => _MainTabViewState();
 }
 
+enum TabView { homeView, selectView, mapView, photoProgressView, profileView }
+
 class _MainTabViewState extends State<MainTabView> {
-  int selectTab = 0;
+  TabView selectTab = TabView.homeView;
   Widget currentTab = HomeView();
   final PageStorageBucket pageBucket = PageStorageBucket();
   @override
@@ -73,9 +79,9 @@ class _MainTabViewState extends State<MainTabView> {
               TabButton(
                 icon: "assets/img/home_tab.png",
                 selectIcon: "assets/img/home_tab_select.png",
-                isActive: selectTab == 0,
+                isActive: selectTab == TabView.homeView,
                 onTap: () {
-                  selectTab = 0;
+                  selectTab = TabView.homeView;
                   currentTab = const HomeView();
                   if (mounted) {
                     setState(() {});
@@ -85,13 +91,27 @@ class _MainTabViewState extends State<MainTabView> {
               TabButton(
                 icon: "assets/img/activity_tab.png",
                 selectIcon: "assets/img/activity_tab_select.png",
-                isActive: selectTab == 1,
+                isActive: selectTab == TabView.selectView,
                 onTap: () {
-                  selectTab = 1;
-                  currentTab = const WorkoutTrackerView();
+                  selectTab = TabView.selectView;
+                  currentTab = const SelectView();
                   if (mounted) {
                     setState(() {});
                   }
+                },
+              ),
+              TabButton(
+                // icon: "assets/img/camera_tab.png",
+                icon: "assets/img/run_tab.png",
+                selectIcon: "assets/img/run_tab.png",
+                isActive: selectTab == TabView.mapView,
+                onTap: () {
+                  // selectTab = TabView.mapView;
+                  // // currentTab = PhotoProgressView();\
+                  // currentTab = MapView();
+                  // if (mounted) {
+                  //   setState(() {});
+                  // }
                 },
               ),
               SizedBox(
@@ -100,10 +120,25 @@ class _MainTabViewState extends State<MainTabView> {
               TabButton(
                 icon: "assets/img/camera_tab.png",
                 selectIcon: "assets/img/camera_tab_select.png",
-                isActive: selectTab == 2,
+                isActive: selectTab == TabView.photoProgressView,
                 onTap: () {
-                  selectTab = 2;
+                  selectTab = TabView.photoProgressView;
+                  // currentTab = PhotoProgressView();\
                   currentTab = PhotoProgressView();
+                  if (mounted) {
+                    setState(() {});
+                  }
+                },
+              ),
+              TabButton(
+                // icon: "assets/img/camera_tab.png",
+                icon: "assets/img/run_tab.png",
+                selectIcon: "assets/img/run_tab_select.png",
+                isActive: selectTab == TabView.mapView,
+                onTap: () {
+                  selectTab = TabView.mapView;
+                  // currentTab = PhotoProgressView();\
+                  currentTab = MapView();
                   if (mounted) {
                     setState(() {});
                   }
@@ -112,9 +147,9 @@ class _MainTabViewState extends State<MainTabView> {
               TabButton(
                 icon: "assets/img/profile_tab.png",
                 selectIcon: "assets/img/profile_tab_select.png",
-                isActive: selectTab == 3,
+                isActive: selectTab == TabView.profileView,
                 onTap: () {
-                  selectTab = 3;
+                  selectTab = TabView.profileView;
                   currentTab = ProfileView();
                   if (mounted) {
                     setState(() {});
