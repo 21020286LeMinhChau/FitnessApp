@@ -1,6 +1,11 @@
 import 'package:fitness/common/color_extension.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:fitness/common_widget/round_button.dart';
+import 'package:fitness/common_widget/today_meal_row.dart';
+import 'package:flutter/widgets.dart';
+import 'package:fitness/common_widget/find_sth_eat.dart';
 
 class MealPlannerView extends StatefulWidget {
   const MealPlannerView({super.key});
@@ -10,6 +15,26 @@ class MealPlannerView extends StatefulWidget {
 }
 
 class _MealPlannerViewState extends State<MealPlannerView> {
+  List todatMealArr = [
+    {
+      "name": "Salmon Nigiri",
+      "image": "assets/img/Salmon.png",
+      "time": "26/03/2024 08:00 AM"
+    },
+    {
+      "name": "Lowfat Milk",
+      "image": "assets/img/Milk.png",
+      "time": "26/03/2024 10:00 AM"
+    }
+  ];
+  List findEatArr = [
+    {
+      "name": "Breakfast",
+      "image": "assets/img/pie.png",
+      "number": "120+ Foods"
+    },
+    {"name": "Lunch", "image": "assets/img/bread.png", "number": "200+"}
+  ];
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
@@ -66,169 +91,304 @@ class _MealPlannerViewState extends State<MealPlannerView> {
         ),
         backgroundColor: TColor.white,
         body: SingleChildScrollView(
-            child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  "Meal Nutrition",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700),
-                ),
-                Container(
-                  height: 30,
-                  padding: EdgeInsets.symmetric(horizontal: 8),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(colors: TColor.primaryG),
-                    borderRadius: BorderRadius.circular(15), // Removed 'const' here
-                  ),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton(
-                      items: ["Weekly", "Monthly"]
-                          .map((name) => DropdownMenuItem(
-                                value: name,
-                                child: Text(
-                                  name,
-                                  style: TextStyle(color: TColor.gray, fontSize: 14),
-                                ),
-                              ))
-                          .toList(),
-                      onChanged: (value) {},
-                      icon: Icon(Icons.expand_more, color: TColor.white),
-                      hint: Text(
-                        "Weekly",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: TColor.white, fontSize: 12),
-                      ),
-                    ),
-                  ),
-                )
-              ],
-            ),
-            SizedBox(
-              height: media.width * 0.05,
-            ),
-            Container(
-                padding: const EdgeInsets.only(left: 15),
-                height: media.width * 0.5,
-                width: double.maxFinite,
-                child: LineChart(
-                  LineChartData(
-                    // showingTooltipIndicators:
-                    //     showingTooltipOnSpots.map((index) {
-                    //   return ShowingTooltipIndicators([
-                    //     LineBarSpot(
-                    //       tooltipsOnBar,
-                    //       lineBarsData.indexOf(tooltipsOnBar),
-                    //       tooltipsOnBar.spots[index],
-                    //     ),
-                    //   ]);
-                    // }).toList(),
-                    lineTouchData: LineTouchData(
-                      enabled: true,
-                      handleBuiltInTouches: false,
-                      touchCallback:
-                          (FlTouchEvent event, LineTouchResponse? response) {
-                        // if (response == null || response.lineBarSpots == null) {
-                        //   return;
-                        // }
-                        // if (event is FlTapUpEvent) {
-                        //   final spotIndex =
-                        //       response.lineBarSpots!.first.spotIndex;
-                        //   showingTooltipOnSpots.clear();
-                        //   setState(() {
-                        //     showingTooltipOnSpots.add(spotIndex);
-                        //   });
-                        // }
-                      },
-                      mouseCursorResolver:
-                          (FlTouchEvent event, LineTouchResponse? response) {
-                        if (response == null || response.lineBarSpots == null) {
-                          return SystemMouseCursors.basic;
-                        }
-                        return SystemMouseCursors.click;
-                      },
-                      getTouchedSpotIndicator:
-                          (LineChartBarData barData, List<int> spotIndexes) {
-                        return spotIndexes.map((index) {
-                          return TouchedSpotIndicatorData(
-                            FlLine(
-                              color: Colors.transparent,
-                            ),
-                            FlDotData(
-                              show: true,
-                              getDotPainter: (spot, percent, barData, index) =>
-                                  FlDotCirclePainter(
-                                radius: 3,
-                                color: Colors.white,
-                                strokeWidth: 3,
-                                strokeColor: TColor.secondaryColor1,
-                              ),
-                            ),
-                          );
-                        }).toList();
-                      },
-                      touchTooltipData: LineTouchTooltipData(
-                        tooltipBgColor: TColor.secondaryColor1,
-                        tooltipRoundedRadius: 20,
-                        getTooltipItems: (List<LineBarSpot> lineBarsSpot) {
-                          return lineBarsSpot.map((lineBarSpot) {
-                            return LineTooltipItem(
-                              "${lineBarSpot.x.toInt()} mins ago",
-                              const TextStyle(
-                                color: Colors.white,
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            );
-                          }).toList();
-                        },
-                      ),
-                    ),
-                    lineBarsData: lineBarsData1,
-                    minY: -0.5,
-                    maxY: 110,
-                    titlesData: FlTitlesData(
-                        show: true,
-                        leftTitles: AxisTitles(),
-                        topTitles: AxisTitles(),
-                        bottomTitles: AxisTitles(
-                          sideTitles: bottomTitles,
+            child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "Meal Nutrition",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700),
                         ),
-                        rightTitles: AxisTitles(
-                          sideTitles: rightTitles,
-                        )),
-                    gridData: FlGridData(
-                      show: true,
-                      drawHorizontalLine: true,
-                      horizontalInterval: 25,
-                      drawVerticalLine: false,
-                      getDrawingHorizontalLine: (value) {
-                        return FlLine(
-                          color: TColor.gray.withOpacity(0.15),
-                          strokeWidth: 2,
-                        );
-                      },
+                        Container(
+                          height: 30,
+                          padding: EdgeInsets.symmetric(horizontal: 8),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(colors: TColor.primaryG),
+                            borderRadius: BorderRadius.circular(
+                                15), // Removed 'const' here
+                          ),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton(
+                              items: ["Weekly", "Monthly"]
+                                  .map((name) => DropdownMenuItem(
+                                        value: name,
+                                        child: Text(
+                                          name,
+                                          style: TextStyle(
+                                              color: TColor.gray, fontSize: 14),
+                                        ),
+                                      ))
+                                  .toList(),
+                              onChanged: (value) {},
+                              icon:
+                                  Icon(Icons.expand_more, color: TColor.white),
+                              hint: Text(
+                                "Weekly",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: TColor.white, fontSize: 12),
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
                     ),
-                    borderData: FlBorderData(
-                      show: true,
-                      border: Border.all(
-                        color: Colors.transparent,
+                    SizedBox(
+                      height: media.width * 0.05,
+                    ),
+                    Container(
+                        padding: const EdgeInsets.only(left: 15),
+                        height: media.width * 0.5,
+                        width: double.maxFinite,
+                        child: LineChart(
+                          LineChartData(
+                            // showingTooltipIndicators:
+                            //     showingTooltipOnSpots.map((index) {
+                            //   return ShowingTooltipIndicators([
+                            //     LineBarSpot(
+                            //       tooltipsOnBar,
+                            //       lineBarsData.indexOf(tooltipsOnBar),
+                            //       tooltipsOnBar.spots[index],
+                            //     ),
+                            //   ]);
+                            // }).toList(),
+                            lineTouchData: LineTouchData(
+                              enabled: true,
+                              handleBuiltInTouches: false,
+                              touchCallback: (FlTouchEvent event,
+                                  LineTouchResponse? response) {
+                                // if (response == null || response.lineBarSpots == null) {
+                                //   return;
+                                // }
+                                // if (event is FlTapUpEvent) {
+                                //   final spotIndex =
+                                //       response.lineBarSpots!.first.spotIndex;
+                                //   showingTooltipOnSpots.clear();
+                                //   setState(() {
+                                //     showingTooltipOnSpots.add(spotIndex);
+                                //   });
+                                // }
+                              },
+                              mouseCursorResolver: (FlTouchEvent event,
+                                  LineTouchResponse? response) {
+                                if (response == null ||
+                                    response.lineBarSpots == null) {
+                                  return SystemMouseCursors.basic;
+                                }
+                                return SystemMouseCursors.click;
+                              },
+                              getTouchedSpotIndicator:
+                                  (LineChartBarData barData,
+                                      List<int> spotIndexes) {
+                                return spotIndexes.map((index) {
+                                  return TouchedSpotIndicatorData(
+                                    FlLine(
+                                      color: Colors.transparent,
+                                    ),
+                                    FlDotData(
+                                      show: true,
+                                      getDotPainter:
+                                          (spot, percent, barData, index) =>
+                                              FlDotCirclePainter(
+                                        radius: 3,
+                                        color: Colors.white,
+                                        strokeWidth: 3,
+                                        strokeColor: TColor.secondaryColor1,
+                                      ),
+                                    ),
+                                  );
+                                }).toList();
+                              },
+                              touchTooltipData: LineTouchTooltipData(
+                                tooltipBgColor: TColor.secondaryColor1,
+                                tooltipRoundedRadius: 20,
+                                getTooltipItems:
+                                    (List<LineBarSpot> lineBarsSpot) {
+                                  return lineBarsSpot.map((lineBarSpot) {
+                                    return LineTooltipItem(
+                                      "${lineBarSpot.x.toInt()} mins ago",
+                                      const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    );
+                                  }).toList();
+                                },
+                              ),
+                            ),
+                            lineBarsData: lineBarsData1,
+                            minY: -0.5,
+                            maxY: 110,
+                            titlesData: FlTitlesData(
+                                show: true,
+                                leftTitles: AxisTitles(),
+                                topTitles: AxisTitles(),
+                                bottomTitles: AxisTitles(
+                                  sideTitles: bottomTitles,
+                                ),
+                                rightTitles: AxisTitles(
+                                  sideTitles: rightTitles,
+                                )),
+                            gridData: FlGridData(
+                              show: true,
+                              drawHorizontalLine: true,
+                              horizontalInterval: 25,
+                              drawVerticalLine: false,
+                              getDrawingHorizontalLine: (value) {
+                                return FlLine(
+                                  color: TColor.gray.withOpacity(0.15),
+                                  strokeWidth: 2,
+                                );
+                              },
+                            ),
+                            borderData: FlBorderData(
+                              show: true,
+                              border: Border.all(
+                                color: Colors.transparent,
+                              ),
+                            ),
+                          ),
+                        )),
+                    SizedBox(
+                      height: media.width * 0.05,
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15, horizontal: 15),
+                      decoration: BoxDecoration(
+                        color: TColor.primaryColor1.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Daily Meal Schedule",
+                            style: TextStyle(
+                                color: TColor.black,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700),
+                          ),
+                          SizedBox(
+                            width: 90,
+                            height: 25,
+                            child: RoundButton(
+                              title: "Check",
+                              type: RoundButtonType.bgGradient,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              onPressed: () {
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder: (context) =>
+                                //         const ActivityTrackerView(),
+                                //   ),
+                                // );
+                              },
+                            ),
+                          )
+                        ],
                       ),
                     ),
-                  ),
-                )),
-            SizedBox(
-              height: media.width * 0.05,
-            ),
-          ],
-        )
-        )
-      );
+                    SizedBox(
+                      height: media.width * 0.05,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "Today Meals",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700),
+                        ),
+                        Container(
+                          height: 30,
+                          padding: EdgeInsets.symmetric(horizontal: 8),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(colors: TColor.primaryG),
+                            borderRadius: BorderRadius.circular(
+                                15), // Removed 'const' here
+                          ),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton(
+                              items: ["Breakfast", "Lunch", "Dinner"]
+                                  .map((name) => DropdownMenuItem(
+                                        value: name,
+                                        child: Text(
+                                          name,
+                                          style: TextStyle(
+                                              color: TColor.gray, fontSize: 14),
+                                        ),
+                                      ))
+                                  .toList(),
+                              onChanged: (value) {},
+                              icon:
+                                  Icon(Icons.expand_more, color: TColor.white),
+                              hint: Text(
+                                "Breakfast",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: TColor.white, fontSize: 12),
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      height: media.width * 0.05,
+                    ),
+                    ListView.builder(
+                        padding: EdgeInsets.zero,
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: todatMealArr.length,
+                        itemBuilder: (context, index) {
+                          var mObj = todatMealArr[index] as Map? ?? {};
+                          return TodayMealRow(
+                            mObj: mObj,
+                          );
+                        }),
+                    SizedBox(
+                      height: media.width * 0.05,
+                    ),
+                    Text(
+                      "Find Sth to eat",
+                      style: TextStyle(
+                          color: TColor.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700),
+                    ),
+                    SizedBox(
+                      height: media.width * 0.6,
+                      child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: findEatArr.length,
+                          itemBuilder: (context, index) {
+                            var fObj = findEatArr[index] as Map? ?? {};
+                            return FindSthToEat(
+                              fObj: fObj,
+                            );
+                          }),
+                    ),
+                    SizedBox(
+                      height: media.width * 0.05,
+                    ),
+                  ],
+                ))));
   }
+
   List<LineChartBarData> get lineBarsData1 => [
         lineChartBarData1_1,
       ];
@@ -236,12 +396,20 @@ class _MealPlannerViewState extends State<MealPlannerView> {
   LineChartBarData get lineChartBarData1_1 => LineChartBarData(
         isCurved: true,
         gradient: LinearGradient(colors: [
-          TColor.primaryColor2.withOpacity(0.5),
-          TColor.primaryColor1.withOpacity(0.5),
+          TColor.primaryColor2,
+          TColor.primaryColor1,
         ]),
-        barWidth: 4,
+        barWidth: 2,
         isStrokeCapRound: true,
-        dotData: FlDotData(show: false),
+        dotData: FlDotData(
+          show: true,
+          getDotPainter: (spot, percent, barData, index) => FlDotCirclePainter(
+            radius: 3,
+            color: Colors.white,
+            strokeWidth: 1,
+            strokeColor: TColor.primaryColor2,
+          ),
+        ),
         belowBarData: BarAreaData(show: false),
         spots: const [
           FlSpot(1, 35),
@@ -253,8 +421,6 @@ class _MealPlannerViewState extends State<MealPlannerView> {
           FlSpot(7, 35),
         ],
       );
-
-
 
   SideTitles get rightTitles => SideTitles(
         getTitlesWidget: rightTitleWidgets,
@@ -342,4 +508,4 @@ class _MealPlannerViewState extends State<MealPlannerView> {
       child: text,
     );
   }
-  }
+}
