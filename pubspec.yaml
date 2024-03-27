@@ -44,7 +44,7 @@ dependencies:
   intl: ^0.18.1
 
   dotted_dashed_line: ^0.0.3
-  animated_toggle_switch: ^0.6.2
+ 
 
   stop_watch_timer: ^3.1.1
   geolocator: ^11.0.0
