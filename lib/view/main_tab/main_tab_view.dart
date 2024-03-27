@@ -8,6 +8,7 @@ import 'package:fitness/view/home/home_view.dart';
 import 'package:fitness/view/main_tab/select_view.dart';
 import 'package:fitness/view/photo_progress/photo_progress_view.dart';
 import 'package:fitness/view/profile/profile_view.dart';
+import 'package:fitness/view/workout_tracker/workout_tracker_view.dart';
 import 'package:flutter/material.dart';
 import 'package:fitness/view/running/map_view.dart';
 
