@@ -1,4 +1,6 @@
 import 'package:fitness/common/color_extension.dart';
+import 'package:fitness/view/meal_planner/meal_planner_view.dart';
+import 'package:fitness/view/workout_tracker/add_schedule_view.dart';
 import 'package:fitness/view/workout_tracker/workour_detail_view.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -15,11 +17,17 @@ class WorkoutTrackerView extends StatefulWidget {
 }
 
 class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
+  int displayedItemCount = 2;
   List latestArr = [
     {
       "image": "assets/img/Workout1.png",
       "title": "Fullbody Workout",
       "time": "Today, 03:00pm"
+    },
+    {
+      "image": "assets/img/Workout2.png",
+      "title": "Upperbody Workout",
+      "time": "June 05, 02:00pm"
     },
     {
       "image": "assets/img/Workout2.png",
@@ -272,13 +280,13 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
                             onPressed: () {
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (context) =>
-                              //         const ActivityTrackerView(),
-                              //   ),
-                              // );
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const MealPlannerView(), // TODO: Add Schedule View
+                                ),
+                              );
                             },
                           ),
                         )
@@ -299,9 +307,14 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
                             fontWeight: FontWeight.w700),
                       ),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          setState(() {
+                            displayedItemCount =
+                                displayedItemCount == 2 ? latestArr.length : 2;
+                          });
+                        },
                         child: Text(
-                          "See More",
+                          displayedItemCount == 2 ? "See More" : "See Less",
                           style: TextStyle(
                               color: TColor.gray,
                               fontSize: 14,
@@ -314,7 +327,7 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
                       padding: EdgeInsets.zero,
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount: latestArr.length,
+                      itemCount: displayedItemCount,
                       itemBuilder: (context, index) {
                         var wObj = latestArr[index] as Map? ?? {};
                         return UpcomingWorkoutRow(wObj: wObj);
@@ -342,10 +355,15 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
                       itemBuilder: (context, index) {
                         var wObj = whatArr[index] as Map? ?? {};
                         return InkWell(
-                          onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context) =>  WorkoutDetailView( dObj: wObj, ) ));
-                          },
-                          child:  WhatTrainRow(wObj: wObj) );
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => WorkoutDetailView(
+                                            dObj: wObj,
+                                          )));
+                            },
+                            child: WhatTrainRow(wObj: wObj));
                       }),
                   SizedBox(
                     height: media.width * 0.1,

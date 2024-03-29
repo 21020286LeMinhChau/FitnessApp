@@ -50,6 +50,8 @@ dependencies:
   geolocator: ^11.0.0
   google_maps_flutter: ^2.6.0
   flutter_config: ^2.0.2
+  lite_rolling_switch: ^1.0.1
+  load_switch: ^2.1.0
 
 dependency_overrides:
   intl: ^0.18.1
