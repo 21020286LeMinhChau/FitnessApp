@@ -1,12 +1,7 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
-<<<<<<< HEAD
-export "FLUTTER_ROOT=E:\flutter_windows_3.19.1-stable\flutter"
-export "FLUTTER_APPLICATION_PATH=E:\Android\projects\FitnessApp"
-=======
-export "FLUTTER_ROOT=F:\flutter"
-export "FLUTTER_APPLICATION_PATH=F:\FitnessAPP"
->>>>>>> ec80940b91414bad6206c3df3aaf01a409b2a854
+export "FLUTTER_ROOT=C:\Users\ADMIN\dev\flutter"
+export "FLUTTER_APPLICATION_PATH=G:\Code\Flutter\BTL\FitnessApp"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
 export "FLUTTER_BUILD_DIR=build"
 export "FLUTTER_BUILD_NAME=1.0.0"

@@ -1,6 +1,9 @@
 import 'package:fitness/common/color_extension.dart';
+import 'package:fitness/common/request_status.dart';
+import 'package:fitness/model/user_complete_profile.dart';
 import 'package:fitness/view/login/what_your_goal_view.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../common_widget/round_button.dart';
 import '../../common_widget/round_textfield.dart';
@@ -13,7 +16,18 @@ class CompleteProfileView extends StatefulWidget {
 }
 
 class _CompleteProfileViewState extends State<CompleteProfileView> {
-  TextEditingController txtDate = TextEditingController();
+  TextEditingController dateOfBirth = TextEditingController();
+  TextEditingController weight = TextEditingController();
+  TextEditingController height = TextEditingController();
+  List<String> dropdownItems = ["Male", "Female"];
+  late String dropdownValue;
+  @override
+  void initState() {
+    super.initState();
+
+    // Set the initial value of the dropdown to the first item in the list
+    dropdownValue = dropdownItems[1];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,8 +76,8 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                                 alignment: Alignment.center,
                                 width: 50,
                                 height: 50,
-                                padding: const EdgeInsets.symmetric(horizontal: 15),
-
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 15),
                                 child: Image.asset(
                                   "assets/img/gender.png",
                                   width: 20,
@@ -71,22 +85,34 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                                   fit: BoxFit.contain,
                                   color: TColor.gray,
                                 )),
-
                             Expanded(
                               child: DropdownButtonHideUnderline(
-                                child: DropdownButton(
-                                  items: ["Male", "Female"]
-                                      .map((name) => DropdownMenuItem(
-                                    value: name,
-                                    child: Text(
-                                      name,
-                                      style: TextStyle(
-                                          color: TColor.gray,
-                                          fontSize: 14),
-                                    ),
-                                  ))
-                                      .toList(),
-                                  onChanged: (value) {},
+                                child: DropdownButton<String>(
+                                  value: dropdownValue,
+                                  icon: Icon(
+                                    Icons.arrow_drop_down,
+                                    color: TColor.gray,
+                                  ),
+                                  iconSize: 24,
+                                  elevation: 16,
+                                  style: TextStyle(color: TColor.gray),
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      dropdownValue = newValue!;
+                                    });
+                                  },
+                                  items: dropdownItems
+                                      .map<DropdownMenuItem<String>>(
+                                          (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(
+                                        value,
+                                        style: TextStyle(
+                                            color: TColor.gray, fontSize: 12),
+                                      ),
+                                    );
+                                  }).toList(),
                                   isExpanded: true,
                                   hint: Text(
                                     "Choose Gender",
@@ -96,17 +122,18 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                                 ),
                               ),
                             ),
-
-                            const SizedBox(width: 8,)
-
+                            const SizedBox(
+                              width: 8,
+                            )
                           ],
-                        ),),
+                        ),
+                      ),
                       SizedBox(
                         height: media.width * 0.04,
                       ),
                       RoundTextField(
-                        controller: txtDate,
-                        hitText: "Date of Birth",
+                        controller: dateOfBirth,
+                        hitText: "Date of Birth (dd/mm/yyyy)",
                         icon: "assets/img/date.png",
                       ),
                       SizedBox(
@@ -116,7 +143,7 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                         children: [
                           Expanded(
                             child: RoundTextField(
-                              controller: txtDate,
+                              controller: weight,
                               hitText: "Your Weight",
                               icon: "assets/img/weight.png",
                             ),
@@ -137,7 +164,7 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                             child: Text(
                               "KG",
                               style:
-                              TextStyle(color: TColor.white, fontSize: 12),
+                                  TextStyle(color: TColor.white, fontSize: 12),
                             ),
                           )
                         ],
@@ -149,7 +176,7 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                         children: [
                           Expanded(
                             child: RoundTextField(
-                              controller: txtDate,
+                              controller: height,
                               hitText: "Your Height",
                               icon: "assets/img/hight.png",
                             ),
@@ -170,7 +197,7 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                             child: Text(
                               "CM",
                               style:
-                              TextStyle(color: TColor.white, fontSize: 12),
+                                  TextStyle(color: TColor.white, fontSize: 12),
                             ),
                           )
                         ],
@@ -180,12 +207,56 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                       ),
                       RoundButton(
                           title: "Next >",
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                    const WhatYourGoalView()));
+                          onPressed: () async {
+                            UserCompleteProfile userCompleteProfile =
+                                UserCompleteProfile(
+                              gender: dropdownValue,
+                              dateOfBirth: dateOfBirth.text,
+                              weight: weight.text,
+                              height: height.text,
+                            );
+
+                            var messageCompleteProfileIsValidForm =
+                                userCompleteProfile.isValidForm();
+                            if (messageCompleteProfileIsValidForm !=
+                                RequestStatus.request200Ok) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content:
+                                      Text(messageCompleteProfileIsValidForm),
+                                ),
+                              );
+                              return;
+                            } else {
+                              await userCompleteProfile.updateProfile().then(
+                                (value) {
+                                  if (value == RequestStatus.request200Ok) {
+                                    Fluttertoast.showToast(
+                                      msg: "Profile updated",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.BOTTOM,
+                                      backgroundColor: TColor.black,
+                                      textColor: TColor.white,
+                                      fontSize: 16.0,
+                                    );
+
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const WhatYourGoalView(),
+                                      ),
+                                    );
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text("Profile not updated"),
+                                      ),
+                                    );
+                                  }
+                                },
+                              );
+                            }
                           }),
                     ],
                   ),

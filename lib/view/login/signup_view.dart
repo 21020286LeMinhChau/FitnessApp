@@ -1,9 +1,13 @@
 import 'package:fitness/common/color_extension.dart';
+import 'package:fitness/common/request_status.dart';
 import 'package:fitness/common_widget/round_button.dart';
 import 'package:fitness/common_widget/round_textfield.dart';
+import 'package:fitness/model/user_register_model.dart';
 import 'package:fitness/view/login/complete_profile_view.dart';
 import 'package:fitness/view/login/login_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class SignUpView extends StatefulWidget {
   const SignUpView({super.key});
@@ -13,6 +17,11 @@ class SignUpView extends StatefulWidget {
 }
 
 class _SignUpViewState extends State<SignUpView> {
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
+
   bool isCheck = false;
   @override
   Widget build(BuildContext context) {
@@ -40,21 +49,24 @@ class _SignUpViewState extends State<SignUpView> {
                 SizedBox(
                   height: media.width * 0.05,
                 ),
-                const RoundTextField(
+                RoundTextField(
+                  controller: firstNameController,
                   hitText: "First Name",
                   icon: "assets/img/user_text.png",
                 ),
                 SizedBox(
                   height: media.width * 0.04,
                 ),
-                const RoundTextField(
+                RoundTextField(
+                  controller: lastNameController,
                   hitText: "Last Name",
                   icon: "assets/img/user_text.png",
                 ),
                 SizedBox(
                   height: media.width * 0.04,
                 ),
-                const RoundTextField(
+                RoundTextField(
+                  controller: emailController,
                   hitText: "Email",
                   icon: "assets/img/email.png",
                   keyboardType: TextInputType.emailAddress,
@@ -63,6 +75,7 @@ class _SignUpViewState extends State<SignUpView> {
                   height: media.width * 0.04,
                 ),
                 RoundTextField(
+                  controller: passwordController,
                   hitText: "Password",
                   icon: "assets/img/lock.png",
                   obscureText: true,
@@ -99,20 +112,71 @@ class _SignUpViewState extends State<SignUpView> {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 8),
-                      child:  Text(
+                      child: Text(
                         "By continuing you accept our Privacy Policy and\nTerm of Use",
                         style: TextStyle(color: TColor.gray, fontSize: 10),
                       ),
-
                     )
                   ],
                 ),
                 SizedBox(
                   height: media.width * 0.4,
                 ),
-                RoundButton(title: "Register", onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const CompleteProfileView()  ));
-                }),
+                RoundButton(
+                  title: "Register",
+                  onPressed: () async {
+                    UserRegisterModel userRegisterModel = UserRegisterModel(
+                        password: passwordController.text,
+                        gmail: emailController.text,
+                        firstName: firstNameController.text,
+                        lastName: lastNameController.text);
+
+                    var validFormMessage = userRegisterModel.isValidForm();
+
+                    if (validFormMessage == RequestStatus.request200Ok) {
+                      await userRegisterModel.registerUser().then((value) {
+                        if (value != RequestStatus.request201Created) {
+                          Fluttertoast.showToast(
+                            msg: "User already exists",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: TColor.black,
+                            textColor: TColor.white,
+                            fontSize: 16.0,
+                          );
+                        } else {
+                          Fluttertoast.showToast(
+                            msg: "User created successfully",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: TColor.black,
+                            textColor: TColor.white,
+                            fontSize: 16.0,
+                          );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const CompleteProfileView(),
+                            ),
+                          );
+                        }
+                      });
+                    } else {
+                      Fluttertoast.showToast(
+                        msg: validFormMessage,
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: TColor.black,
+                        textColor: TColor.white,
+                        fontSize: 16.0,
+                      );
+                    }
+                    ;
+                  },
+                ),
                 SizedBox(
                   height: media.width * 0.04,
                 ),
@@ -121,18 +185,18 @@ class _SignUpViewState extends State<SignUpView> {
                   children: [
                     Expanded(
                         child: Container(
-                          height: 1,
-                          color: TColor.gray.withOpacity(0.5),
-                        )),
+                      height: 1,
+                      color: TColor.gray.withOpacity(0.5),
+                    )),
                     Text(
                       "  Or  ",
                       style: TextStyle(color: TColor.black, fontSize: 12),
                     ),
                     Expanded(
                         child: Container(
-                          height: 1,
-                          color: TColor.gray.withOpacity(0.5),
-                        )),
+                      height: 1,
+                      color: TColor.gray.withOpacity(0.5),
+                    )),
                   ],
                 ),
                 SizedBox(
@@ -162,11 +226,9 @@ class _SignUpViewState extends State<SignUpView> {
                         ),
                       ),
                     ),
-
                     SizedBox(
                       width: media.width * 0.04,
                     ),
-
                     GestureDetector(
                       onTap: () {},
                       child: Container(

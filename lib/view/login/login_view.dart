@@ -1,8 +1,12 @@
 import 'package:fitness/common/color_extension.dart';
+import 'package:fitness/common/request_status.dart';
 import 'package:fitness/common_widget/round_button.dart';
 import 'package:fitness/common_widget/round_textfield.dart';
+import 'package:fitness/model/user_login_model.dart';
+import 'package:fitness/service/user_service.dart';
 import 'package:fitness/view/login/complete_profile_view.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -13,6 +17,10 @@ class LoginView extends StatefulWidget {
 
 class _LoginViewState extends State<LoginView> {
   bool isCheck = false;
+
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
@@ -43,7 +51,8 @@ class _LoginViewState extends State<LoginView> {
                 SizedBox(
                   height: media.width * 0.04,
                 ),
-                const RoundTextField(
+                RoundTextField(
+                  controller: emailController,
                   hitText: "Email",
                   icon: "assets/img/email.png",
                   keyboardType: TextInputType.emailAddress,
@@ -52,6 +61,7 @@ class _LoginViewState extends State<LoginView> {
                   height: media.width * 0.04,
                 ),
                 RoundTextField(
+                  controller: passwordController,
                   hitText: "Password",
                   icon: "assets/img/lock.png",
                   obscureText: true,
@@ -84,12 +94,71 @@ class _LoginViewState extends State<LoginView> {
                 const Spacer(),
                 RoundButton(
                     title: "Login",
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                              const CompleteProfileView()));
+                    onPressed: () async {
+                      UserLoginModel userLoginModel = UserLoginModel(
+                        gmail: emailController.text,
+                        password: passwordController.text,
+                      );
+
+                      var messageIsLoginForm = userLoginModel.isValidForm();
+
+                      if (messageIsLoginForm == RequestStatus.request200Ok) {
+                        await userLoginModel.login().then(
+                          (value) {
+                            if (value == RequestStatus.request200Ok) {
+                              Fluttertoast.showToast(
+                                msg: "Login success",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor: TColor.black,
+                                textColor: TColor.white,
+                                fontSize: 16.0,
+                              );
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const CompleteProfileView(),
+                                ),
+                              );
+                            } else {
+                              if (value ==
+                                  RequestStatus.request401Unauthorized) {
+                                Fluttertoast.showToast(
+                                  msg: "Password is incorrect",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIosWeb: 1,
+                                  backgroundColor: TColor.black,
+                                  textColor: TColor.white,
+                                  fontSize: 16.0,
+                                );
+                              } else {
+                                Fluttertoast.showToast(
+                                  msg: "Email is not exist",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIosWeb: 1,
+                                  backgroundColor: TColor.black,
+                                  textColor: TColor.white,
+                                  fontSize: 16.0,
+                                );
+                              }
+                            }
+                          },
+                        );
+                      } else {
+                        Fluttertoast.showToast(
+                          msg: messageIsLoginForm,
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: TColor.black,
+                          textColor: TColor.white,
+                          fontSize: 16.0,
+                        );
+                      }
                     }),
                 SizedBox(
                   height: media.width * 0.04,
@@ -99,18 +168,18 @@ class _LoginViewState extends State<LoginView> {
                   children: [
                     Expanded(
                         child: Container(
-                          height: 1,
-                          color: TColor.gray.withOpacity(0.5),
-                        )),
+                      height: 1,
+                      color: TColor.gray.withOpacity(0.5),
+                    )),
                     Text(
                       "  Or  ",
                       style: TextStyle(color: TColor.black, fontSize: 12),
                     ),
                     Expanded(
                         child: Container(
-                          height: 1,
-                          color: TColor.gray.withOpacity(0.5),
-                        )),
+                      height: 1,
+                      color: TColor.gray.withOpacity(0.5),
+                    )),
                   ],
                 ),
                 SizedBox(
