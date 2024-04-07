@@ -1,4 +1,5 @@
 import 'package:fitness/common_widget/meal_recommend_cell.dart';
+import 'package:fitness/view/meal_planner/food_info_details_view.dart';
 import 'package:flutter/material.dart';
 import 'package:fitness/common/color_extension.dart';
 import 'package:fitness/common_widget/meal_category_cell.dart';
@@ -264,12 +265,20 @@ class _MealFoodDetailsViewState extends State<MealFoodDetailsView> {
                 shrinkWrap: true,
                 itemCount: popularArr.length,
                 itemBuilder: (context, index) {
-                  var mObj = popularArr[index] as Map? ?? {};
-                  return PopularMealRow(
-                    mObj: mObj,
+                  var fObj = popularArr[index] as Map? ?? {};
+                  return InkWell(
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => FoodInfoDetailView( dObj: fObj, mObj: widget.eObj,)));
+                    },
+                  child:PopularMealRow(
+                    mObj: fObj,
+                  )
+                
                   );
-                })
-            ),
+                },
+              ),
+            ),  
+
             
             
             SizedBox(
