@@ -81,7 +81,7 @@ class UserCompleteProfile {
     return RequestStatus.request200Ok;
   }
 
-  updateProfile() {
-    return UserService().completeProfile(this);
-  }
+  // updateProfile() {
+  //   return UserService().completeProfile(this);
+  // }
 }

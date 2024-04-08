@@ -3,6 +3,7 @@ import 'package:fitness/common/request_status.dart';
 import 'package:fitness/common_widget/round_button.dart';
 import 'package:fitness/common_widget/round_textfield.dart';
 import 'package:fitness/model/user_login_model.dart';
+import 'package:fitness/service/user_service.dart';
 import 'package:fitness/view/home/home_view.dart';
 import 'package:fitness/view/login/complete_profile_view.dart';
 import 'package:fitness/view/login/signup_view.dart';
@@ -105,7 +106,7 @@ class _LoginViewState extends State<LoginView> {
                       var messageIsLoginForm = userLoginModel.isValidForm();
 
                       if (messageIsLoginForm == RequestStatus.request200Ok) {
-                        await userLoginModel.login().then(
+                        await UserService().login(userLoginModel).then(
                           (value) {
                             if (value['status'] == RequestStatus.request200Ok) {
                               Fluttertoast.showToast(

@@ -1,6 +1,7 @@
 import 'package:fitness/common/color_extension.dart';
 import 'package:fitness/common/request_status.dart';
 import 'package:fitness/model/user_complete_profile.dart';
+import 'package:fitness/service/user_service.dart';
 import 'package:fitness/view/login/what_your_goal_view.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -233,7 +234,9 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                               );
                               return;
                             } else {
-                              await userCompleteProfile.updateProfile().then(
+                              await UserService()
+                                  .completeProfile(userCompleteProfile)
+                                  .then(
                                 (value) {
                                   if (value['status'] ==
                                       RequestStatus.request200Ok) {

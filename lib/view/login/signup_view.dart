@@ -3,6 +3,7 @@ import 'package:fitness/common/request_status.dart';
 import 'package:fitness/common_widget/round_button.dart';
 import 'package:fitness/common_widget/round_textfield.dart';
 import 'package:fitness/model/user_register_model.dart';
+import 'package:fitness/service/user_service.dart';
 import 'package:fitness/view/login/complete_profile_view.dart';
 import 'package:fitness/view/login/login_view.dart';
 import 'package:flutter/material.dart';
@@ -135,8 +136,8 @@ class _SignUpViewState extends State<SignUpView> {
                     var validFormMessage = userRegisterModel.isValidForm();
 
                     if (validFormMessage == RequestStatus.request200Ok) {
-                      await userRegisterModel
-                          .registerUser()
+                      await UserService()
+                          .createUser(userRegisterModel)
                           .then((value) async {
                         if (value['status'] !=
                             RequestStatus.request201Created) {

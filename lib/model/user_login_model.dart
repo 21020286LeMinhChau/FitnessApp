@@ -33,7 +33,7 @@ class UserLoginModel {
     return RequestStatus.request200Ok;
   }
 
-  login() {
-    return UserService().login(this);
-  }
+  // login() {
+  //   return UserService().login(this);
+  // }
 }

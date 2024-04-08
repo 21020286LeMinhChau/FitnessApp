@@ -22,9 +22,9 @@ class UserRegisterModel {
     };
   }
 
-  registerUser() {
-    return UserService().createUser(this);
-  }
+  // registerUser() {
+  //   return UserService().createUser(this);
+  // }
 
   isValidForm() {
     if (firstName.isEmpty) {
