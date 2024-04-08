@@ -8,6 +8,7 @@ import 'package:fitness/view/login/login_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignUpView extends StatefulWidget {
   const SignUpView({super.key});
@@ -134,14 +135,16 @@ class _SignUpViewState extends State<SignUpView> {
                     var validFormMessage = userRegisterModel.isValidForm();
 
                     if (validFormMessage == RequestStatus.request200Ok) {
-                      await userRegisterModel.registerUser().then((value) {
-                        if (value != RequestStatus.request201Created) {
+                      await userRegisterModel
+                          .registerUser()
+                          .then((value) async {
+                        if (value['status'] !=
+                            RequestStatus.request201Created) {
                           Fluttertoast.showToast(
                             msg: "User already exists",
                             toastLength: Toast.LENGTH_SHORT,
                             gravity: ToastGravity.BOTTOM,
                             timeInSecForIosWeb: 1,
-                            backgroundColor: TColor.black,
                             textColor: TColor.white,
                             fontSize: 16.0,
                           );
@@ -152,9 +155,14 @@ class _SignUpViewState extends State<SignUpView> {
                             gravity: ToastGravity.BOTTOM,
                             timeInSecForIosWeb: 1,
                             backgroundColor: TColor.black,
-                            textColor: TColor.white,
                             fontSize: 16.0,
                           );
+
+                          SharedPreferences.getInstance().then((prefs) {
+                            prefs.setString(
+                                "user_id", value['data'].toString());
+                          });
+
                           Navigator.push(
                             context,
                             MaterialPageRoute(

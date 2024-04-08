@@ -3,10 +3,12 @@ import 'package:fitness/common/request_status.dart';
 import 'package:fitness/common_widget/round_button.dart';
 import 'package:fitness/common_widget/round_textfield.dart';
 import 'package:fitness/model/user_login_model.dart';
-import 'package:fitness/service/user_service.dart';
+import 'package:fitness/view/home/home_view.dart';
 import 'package:fitness/view/login/complete_profile_view.dart';
+import 'package:fitness/view/login/signup_view.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -105,7 +107,7 @@ class _LoginViewState extends State<LoginView> {
                       if (messageIsLoginForm == RequestStatus.request200Ok) {
                         await userLoginModel.login().then(
                           (value) {
-                            if (value == RequestStatus.request200Ok) {
+                            if (value['status'] == RequestStatus.request200Ok) {
                               Fluttertoast.showToast(
                                 msg: "Login success",
                                 toastLength: Toast.LENGTH_SHORT,
@@ -115,15 +117,38 @@ class _LoginViewState extends State<LoginView> {
                                 textColor: TColor.white,
                                 fontSize: 16.0,
                               );
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const CompleteProfileView(),
-                                ),
-                              );
+
+                              SharedPreferences.getInstance().then((prefs) {
+                                prefs.setString(
+                                    "user_id", value['data'].id.toString());
+                              });
+
+                              // print(value['data']['weight']);
+                              // print data in value
+
+                              if (!value['data'].data().containsKey('weight') ||
+                                  !value['data'].data().containsKey('height') ||
+                                  !value['data']
+                                      .data()
+                                      .containsKey('dateOfBirth') ||
+                                  !value['data'].data().containsKey('gender')) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const CompleteProfileView(),
+                                  ),
+                                );
+                              } else {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const HomeView(),
+                                  ),
+                                );
+                              }
                             } else {
-                              if (value ==
+                              if (value['status'] ==
                                   RequestStatus.request401Unauthorized) {
                                 Fluttertoast.showToast(
                                   msg: "Password is incorrect",
@@ -252,12 +277,29 @@ class _LoginViewState extends State<LoginView> {
                           fontSize: 14,
                         ),
                       ),
-                      Text(
-                        "Register",
-                        style: TextStyle(
-                            color: TColor.black,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700),
+                      // Text(
+                      //   "Register",
+                      //   style: TextStyle(
+                      //       color: TColor.black,
+                      //       fontSize: 14,
+                      //       fontWeight: FontWeight.w700),
+                      //   // click
+                      // )
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SignUpView()),
+                          );
+                        },
+                        child: Text(
+                          "Register",
+                          style: TextStyle(
+                              color: TColor.black,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700),
+                        ),
                       )
                     ],
                   ),

@@ -4,6 +4,7 @@ import 'package:fitness/model/user_complete_profile.dart';
 import 'package:fitness/view/login/what_your_goal_view.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../common_widget/round_button.dart';
 import '../../common_widget/round_textfield.dart';
@@ -210,6 +211,10 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                           onPressed: () async {
                             UserCompleteProfile userCompleteProfile =
                                 UserCompleteProfile(
+                              user_id:
+                                  await SharedPreferences.getInstance().then(
+                                (value) => value.getString("user_id")!,
+                              ),
                               gender: dropdownValue,
                               dateOfBirth: dateOfBirth.text,
                               weight: weight.text,
@@ -230,7 +235,8 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                             } else {
                               await userCompleteProfile.updateProfile().then(
                                 (value) {
-                                  if (value == RequestStatus.request200Ok) {
+                                  if (value['status'] ==
+                                      RequestStatus.request200Ok) {
                                     Fluttertoast.showToast(
                                       msg: "Profile updated",
                                       toastLength: Toast.LENGTH_SHORT,

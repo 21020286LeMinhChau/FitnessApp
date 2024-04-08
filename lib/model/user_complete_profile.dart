@@ -4,7 +4,8 @@ import 'package:fitness/common/request_status.dart';
 import 'package:fitness/service/user_service.dart';
 
 class UserCompleteProfile {
-  String gmail = "k@";
+  // String gmail = "3@";
+  String user_id;
   String gender;
   String weight;
   String height;
@@ -12,6 +13,7 @@ class UserCompleteProfile {
   String dateOfBirth;
 
   UserCompleteProfile({
+    required this.user_id,
     required this.gender,
     required this.weight,
     required this.height,
@@ -20,7 +22,7 @@ class UserCompleteProfile {
 
   Map<String, dynamic> toMap() {
     return {
-      'gmail': gmail,
+      'user_id': user_id,
       'gender': gender,
       'weight': weight,
       'height': height,

@@ -14,14 +14,25 @@ class UserService {
         .where('gmail', isEqualTo: userInformationCreate.gmail)
         .get();
     if (querySnapshot.docs.isNotEmpty) {
-      return RequestStatus.request409Conflict;
+      // return RequestStatus.request409Conflict;\
+
+      return {
+        // return status and id of the created user
+        'status': RequestStatus.request409Conflict,
+        'data': querySnapshot.docs.first.id,
+      };
     }
 
     try {
-      await FirebaseFirestore.instance
+      var userCreate = await FirebaseFirestore.instance
           .collection(collectionUser)
           .add(userInformationCreate.toMap());
-      return RequestStatus.request201Created;
+      // return RequestStatus.request201Created;
+      return {
+        // return status and id of the created user
+        'status': RequestStatus.request201Created,
+        'data': userCreate.id,
+      };
     } catch (e) {
       return RequestStatus.request500InternalServerError;
     }
@@ -38,7 +49,13 @@ class UserService {
       }
 
       if (value.docs.first.get('password') == userLoginInformation.password) {
-        return RequestStatus.request200Ok;
+        // return RequestStatus.request200Ok;
+        return {
+          // return status and id of the created user
+          'status': RequestStatus.request200Ok,
+          // return map of the user
+          'data': value.docs.first,
+        };
       }
 
       return RequestStatus.request401Unauthorized;
@@ -48,21 +65,27 @@ class UserService {
   Future completeProfile(UserCompleteProfile userCompleteProfile) {
     return FirebaseFirestore.instance
         .collection(collectionUser)
-        .where('gmail', isEqualTo: userCompleteProfile.gmail)
+        //  where id document is equal to user_id
+        .doc(userCompleteProfile.user_id)
         .get()
         .then((value) {
-      if (value.docs.isEmpty) {
-        return RequestStatus.request404NotFound;
-      }
-
       try {
         FirebaseFirestore.instance
             .collection(collectionUser)
-            .doc(value.docs.first.id)
+            .doc(userCompleteProfile.user_id)
             .update(userCompleteProfile.toMap());
-        return RequestStatus.request200Ok;
+        // return RequestStatus.request200Ok;
+        return {
+          // return status and id of the created user
+          'status': RequestStatus.request200Ok,
+          'data': userCompleteProfile.user_id,
+        };
       } catch (e) {
-        return RequestStatus.request500InternalServerError;
+        // return RequestStatus.request500InternalServerError;
+        return {
+          // return status and id of the created user
+          'status': RequestStatus.request500InternalServerError,
+        };
       }
     });
   }
