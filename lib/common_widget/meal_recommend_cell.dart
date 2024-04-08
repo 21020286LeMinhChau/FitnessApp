@@ -16,8 +16,8 @@ class MealRecommendCell extends StatelessWidget {
       width: media.width * 0.5,
       decoration: BoxDecoration(
           gradient: LinearGradient(colors: [
-            TColor.secondaryColor1.withOpacity(0.5),
-            TColor.secondaryColor2.withOpacity(0.5)
+            TColor.primaryColor1.withOpacity(0.3),
+            TColor.primaryColor2.withOpacity(0.3)
           ]),
           borderRadius: BorderRadius.circular(25)),
       child: Column(
@@ -57,7 +57,7 @@ class MealRecommendCell extends StatelessWidget {
               height: 35,
               child: RoundButton(
                   fontSize: 12,
-                  type: RoundButtonType.bgGradient,
+                  type: RoundButtonType.bgSGradient,
                   title: "View",
                   onPressed: () {}),
             ),

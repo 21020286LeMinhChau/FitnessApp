@@ -1,10 +1,11 @@
 import 'package:fitness/common/color_extension.dart';
 import 'package:fitness/common_widget/food_step_detail_row.dart';
-import 'package:fitness/common_widget/icon_title_next_row.dart';
+// import 'package:fitness/common_widget/icon_title_next_row.dart';
 import 'package:fitness/common_widget/ingredient_next_row.dart';
 import 'package:fitness/common_widget/round_button.dart';
-import 'package:fitness/view/workout_tracker/exercises_stpe_details.dart';
-import 'package:fitness/view/workout_tracker/workout_schedule_view.dart';
+import 'package:fitness/view/meal_planner/meal_schedule_view.dart';
+// import 'package:fitness/view/workout_tracker/exercises_stpe_details.dart';
+// import 'package:fitness/view/workout_tracker/workout_schedule_view.dart';
 import 'package:flutter/material.dart';
 import 'package:readmore/readmore.dart';
 
@@ -341,7 +342,7 @@ class _FoodInfoDetailViewState extends State<FoodInfoDetailView> {
                           itemCount: ingredientsArr.length,
                           itemBuilder: ((context, index) {
                             var iObj = ingredientsArr[index] as Map? ?? {};
-                      
+
                             return IngredientNextRow(
                               nObj: iObj,
                             );
@@ -388,11 +389,12 @@ class _FoodInfoDetailViewState extends State<FoodInfoDetailView> {
                       ),
                       // SizedBox(,
                       SizedBox(
-                        height: media.width * 0.1,
+                        height: media.width * 0.3,
                       ),
                     ],
                   ),
                 ),
+               
                 SafeArea(
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
@@ -400,7 +402,13 @@ class _FoodInfoDetailViewState extends State<FoodInfoDetailView> {
                     children: [
                       RoundButton(
                           title: "Add to ${widget.mObj['name']} Meal",
-                          onPressed: () {})
+                          type: RoundButtonType.bgSGradient ,
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const MealScheduleView()));
+                          })
                     ],
                   ),
                 )
@@ -408,6 +416,7 @@ class _FoodInfoDetailViewState extends State<FoodInfoDetailView> {
             ),
           ),
         ),
+
       ),
     );
   }

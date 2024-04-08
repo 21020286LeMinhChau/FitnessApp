@@ -36,7 +36,7 @@ class IngredientNextRow extends StatelessWidget {
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [TColor.primaryColor2.withOpacity(0.9), TColor.secondaryColor1.withOpacity(0.5)],
+                    colors: [TColor.primaryColor2.withOpacity(0.5), TColor.primaryColor1.withOpacity(0.5)],
                   ),
                   boxShadow: [
                     BoxShadow(
