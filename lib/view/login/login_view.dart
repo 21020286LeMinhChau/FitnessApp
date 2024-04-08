@@ -7,6 +7,7 @@ import 'package:fitness/service/user_service.dart';
 import 'package:fitness/view/home/home_view.dart';
 import 'package:fitness/view/login/complete_profile_view.dart';
 import 'package:fitness/view/login/signup_view.dart';
+import 'package:fitness/view/main_tab/main_tab_view.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -144,7 +145,7 @@ class _LoginViewState extends State<LoginView> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const HomeView(),
+                                    builder: (context) => const MainTabView(),
                                   ),
                                 );
                               }

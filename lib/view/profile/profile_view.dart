@@ -1,4 +1,6 @@
+import 'package:fitness/view/login/login_view.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../common/color_extension.dart';
 import '../../common_widget/round_button.dart';
@@ -35,6 +37,7 @@ class _ProfileViewState extends State<ProfileView> {
     {"image": "./assets/img/p_contact.png", "name": "Contact Us", "tag": "5"},
     {"image": "assets/img/p_privacy.png", "name": "Privacy Policy", "tag": "6"},
     {"image": "assets/img/p_setting.png", "name": "Setting", "tag": "7"},
+    {"image": "assets/img/p_logout.png", "name": "Logout", "tag": "8"},
   ];
   @override
   Widget build(BuildContext context) {
@@ -169,7 +172,7 @@ class _ProfileViewState extends State<ProfileView> {
               ),
               Container(
                 padding:
-                const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                 decoration: BoxDecoration(
                     color: TColor.white,
                     borderRadius: BorderRadius.circular(15),
@@ -211,7 +214,7 @@ class _ProfileViewState extends State<ProfileView> {
               ),
               Container(
                 padding:
-                const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                 decoration: BoxDecoration(
                     color: TColor.white,
                     borderRadius: BorderRadius.circular(15),
@@ -257,7 +260,7 @@ class _ProfileViewState extends State<ProfileView> {
                               dif: 0.0,
                               indicatorSize: Size.square(30.0),
                               animationDuration:
-                              const Duration(milliseconds: 200),
+                                  const Duration(milliseconds: 200),
                               animationCurve: Curves.linear,
                               onChanged: (b) => setState(() => positive = b),
                               iconBuilder: (context, local, global) {
@@ -273,15 +276,14 @@ class _ProfileViewState extends State<ProfileView> {
                                     Positioned(
                                         left: 10.0,
                                         right: 10.0,
-
                                         height: 30.0,
                                         child: DecoratedBox(
                                           decoration: BoxDecoration(
                                             gradient: LinearGradient(
                                                 colors: TColor.secondaryG),
                                             borderRadius:
-                                            const BorderRadius.all(
-                                                Radius.circular(50.0)),
+                                                const BorderRadius.all(
+                                                    Radius.circular(50.0)),
                                           ),
                                         )),
                                     child,
@@ -318,7 +320,7 @@ class _ProfileViewState extends State<ProfileView> {
               ),
               Container(
                 padding:
-                const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                 decoration: BoxDecoration(
                     color: TColor.white,
                     borderRadius: BorderRadius.circular(15),
@@ -349,7 +351,21 @@ class _ProfileViewState extends State<ProfileView> {
                         return SettingRow(
                           icon: iObj["image"].toString(),
                           title: iObj["name"].toString(),
-                          onPressed: () {},
+                          onPressed: () async {
+                            // set user_id to null
+                            await SharedPreferences.getInstance().then((prefs) {
+                              prefs.remove("user_id");
+                            });
+
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const LoginView(),
+                              ),
+                              (Route<dynamic> route) =>
+                                  false, // Never allow user to go back
+                            );
+                          },
                         );
                       },
                     )
