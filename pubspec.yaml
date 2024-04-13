@@ -60,6 +60,7 @@ dependencies:
   fluttertoast: ^8.2.4
   shared_preferences: ^2.2.2
   tuple: ^2.0.2
+  flutter_switch: ^0.3.2
 
 dependency_overrides:
   intl: ^0.18.1
