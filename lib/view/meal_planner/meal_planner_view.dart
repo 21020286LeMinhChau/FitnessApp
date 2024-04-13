@@ -1,4 +1,5 @@
 import 'package:fitness/common/color_extension.dart';
+import 'package:fitness/view/meal_planner/meal_food_details_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -6,6 +7,7 @@ import 'package:fitness/common_widget/round_button.dart';
 import 'package:fitness/common_widget/today_meal_row.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fitness/common_widget/find_sth_eat.dart';
+
 
 class MealPlannerView extends StatefulWidget {
   const MealPlannerView({super.key});
@@ -290,7 +292,7 @@ class _MealPlannerViewState extends State<MealPlannerView> {
                                 //   context,
                                 //   MaterialPageRoute(
                                 //     builder: (context) =>
-                                //         const ActivityTrackerView(),
+                                //         const MealFoodDetailsView(),
                                 //   ),
                                 // );
                               },
@@ -377,9 +379,22 @@ class _MealPlannerViewState extends State<MealPlannerView> {
                           itemCount: findEatArr.length,
                           itemBuilder: (context, index) {
                             var fObj = findEatArr[index] as Map? ?? {};
-                            return FindSthToEat(
-                              fObj: fObj,
+                            return InkWell(
+                              onTap: (){{
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        MealFoodDetailsView(eObj: fObj),
+                                  ),
+                                );
+                              
+                              }},
+                              child: FindSthToEat(
+                                fObj: fObj,
+                              ),
                             );
+                            
                           }),
                     ),
                     SizedBox(
