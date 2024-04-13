@@ -1,12 +1,16 @@
 import 'package:animated_toggle_switch/animated_toggle_switch.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fitness/common/color_extension.dart';
+import 'package:fitness/model/workout_playlist_model.dart';
 import 'package:flutter/material.dart';
 import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 import 'package:load_switch/load_switch.dart';
 
 class UpcomingWorkoutRow extends StatefulWidget {
-  final Map wObj;
-  const UpcomingWorkoutRow({super.key, required this.wObj});
+  // final Map wObj;
+  final WorkoutPlaylistModel workoutPlaylistItem;
+
+  UpcomingWorkoutRow({required this.workoutPlaylistItem});
 
   @override
   State<UpcomingWorkoutRow> createState() => _UpcomingWorkoutRowState();
@@ -30,7 +34,7 @@ class _UpcomingWorkoutRowState extends State<UpcomingWorkoutRow> {
             boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 2)]),
         child: Row(
           children: [
-            ClipRRect(
+            /*   ClipRRect(
               borderRadius: BorderRadius.circular(30),
               child: Image.asset(
                 widget.wObj["image"].toString(),
@@ -38,7 +42,7 @@ class _UpcomingWorkoutRowState extends State<UpcomingWorkoutRow> {
                 height: 50,
                 fit: BoxFit.cover,
               ),
-            ),
+            ), */
             const SizedBox(
               width: 15,
             ),
@@ -47,19 +51,19 @@ class _UpcomingWorkoutRowState extends State<UpcomingWorkoutRow> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.wObj["title"].toString(),
+                  widget.workoutPlaylistItem.title,
                   style: TextStyle(
                       color: TColor.black,
                       fontSize: 12,
                       fontWeight: FontWeight.w500),
                 ),
-                Text(
+                /*  Text(
                   widget.wObj["time"].toString(),
                   style: TextStyle(
                     color: TColor.gray,
                     fontSize: 10,
                   ),
-                ),
+                ), */
               ],
             )),
             LoadSwitch(

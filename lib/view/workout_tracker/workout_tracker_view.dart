@@ -1,4 +1,5 @@
 import 'package:fitness/common/color_extension.dart';
+import 'package:fitness/model/workout_playlist_model.dart';
 import 'package:fitness/view/meal_planner/meal_planner_view.dart';
 import 'package:fitness/view/workout_tracker/add_schedule_view.dart';
 import 'package:fitness/view/workout_tracker/workour_detail_view.dart';
@@ -9,6 +10,9 @@ import '../../common_widget/round_button.dart';
 import '../../common_widget/upcoming_workout_row.dart';
 import '../../common_widget/what_train_row.dart';
 
+import 'package:fitness/service/workout_playlist.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class WorkoutTrackerView extends StatefulWidget {
   const WorkoutTrackerView({super.key});
 
@@ -17,7 +21,17 @@ class WorkoutTrackerView extends StatefulWidget {
 }
 
 class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
-  int displayedItemCount = 2;
+  int displayedItemCount = 1;
+  List<String> pIDs = [];
+  //get the list of pIDs from the Firestore collection
+  Future getPlaylistIDs() async {
+    await FirebaseFirestore.instance.collection('workoutPlaylist').get().then(
+          (snapshot) => snapshot.docs.forEach((doc) {
+            pIDs.add(doc.reference.id);
+          }),
+        );
+  }
+
   List latestArr = [
     {
       "image": "assets/img/Workout1.png",
@@ -60,6 +74,7 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
+
     return Container(
       decoration:
           BoxDecoration(gradient: LinearGradient(colors: TColor.primaryG)),
@@ -324,14 +339,18 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
                     ],
                   ),
                   ListView.builder(
-                      padding: EdgeInsets.zero,
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: displayedItemCount,
-                      itemBuilder: (context, index) {
-                        var wObj = latestArr[index] as Map? ?? {};
-                        return UpcomingWorkoutRow(wObj: wObj);
-                      }),
+                    padding: EdgeInsets.zero,
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: displayedItemCount,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: WorkoutPlaylistService(
+                          pid: pIDs[index],
+                        ),
+                      );
+                    },
+                  ),
                   SizedBox(
                     height: media.width * 0.05,
                   ),
