@@ -21,6 +21,7 @@ class LoginView extends StatefulWidget {
 
 class _LoginViewState extends State<LoginView> {
   bool isCheck = false;
+  bool _isPasswordVisible = false;
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -68,15 +69,21 @@ class _LoginViewState extends State<LoginView> {
                   controller: passwordController,
                   hitText: "Password",
                   icon: "assets/img/lock.png",
-                  obscureText: true,
+                  obscureText: !_isPasswordVisible,
                   rigtIcon: TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() {
+                          _isPasswordVisible = !_isPasswordVisible;
+                        });
+                      },
                       child: Container(
                           alignment: Alignment.center,
                           width: 20,
                           height: 20,
                           child: Image.asset(
-                            "assets/img/show_password.png",
+                            _isPasswordVisible
+                                ? "assets/img/hide_password.png"
+                                : "assets/img/show_password.png",
                             width: 20,
                             height: 20,
                             fit: BoxFit.contain,

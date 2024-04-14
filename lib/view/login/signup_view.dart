@@ -25,6 +25,8 @@ class _SignUpViewState extends State<SignUpView> {
   TextEditingController lastNameController = TextEditingController();
 
   bool isCheck = false;
+  bool _isPasswordVisible = false;
+
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
@@ -80,15 +82,21 @@ class _SignUpViewState extends State<SignUpView> {
                   controller: passwordController,
                   hitText: "Password",
                   icon: "assets/img/lock.png",
-                  obscureText: true,
+                  obscureText: !_isPasswordVisible,
                   rigtIcon: TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() {
+                          _isPasswordVisible = !_isPasswordVisible;
+                        });
+                      },
                       child: Container(
                           alignment: Alignment.center,
                           width: 20,
                           height: 20,
                           child: Image.asset(
-                            "assets/img/show_password.png",
+                            _isPasswordVisible
+                                ? "assets/img/hide_password.png"
+                                : "assets/img/show_password.png",
                             width: 20,
                             height: 20,
                             fit: BoxFit.contain,
