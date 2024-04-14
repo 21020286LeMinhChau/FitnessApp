@@ -71,6 +71,11 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
     var media = MediaQuery.of(context).size;
     final workoutPlaylistController = Get.put(WorkoutPlaylistController());
 
+    Future<RxList<WorkoutPlaylistModel>> fetchWorkoutPlaylistController() async {
+      await workoutPlaylistController.fetchWorkoutPlaylist();
+      return Future.value(workoutPlaylistController.allWorkoutPlaylist);
+    }
+
     return Container(
       decoration:
           BoxDecoration(gradient: LinearGradient(colors: TColor.primaryG)),
@@ -334,19 +339,30 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
                       )
                     ],
                   ),
-                  ListView.builder(
-                      padding: EdgeInsets.zero,
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: displayedItemCount,
-                      itemBuilder: (_, index) {
-                        final playlist =
-                            workoutPlaylistController.allWorkoutPlaylist[index];
-                        print(workoutPlaylistController.isLoading.value);
-                        return UpcomingWorkoutRow(
-                          workoutPlaylistItem: playlist,
+                  FutureBuilder<List<WorkoutPlaylistModel>>(
+                    future: fetchWorkoutPlaylistController(),
+                    builder: (BuildContext context, AsyncSnapshot<List<WorkoutPlaylistModel>> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator(); // or your custom loading widget
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        return ListView.builder(
+                          padding: EdgeInsets.zero,
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: displayedItemCount,
+                          itemBuilder: (_, index) {
+                            final playlist = snapshot.data?[index];
+                            print(workoutPlaylistController.isLoading.value);
+                            return UpcomingWorkoutRow(
+                              workoutPlaylistItem: playlist as WorkoutPlaylistModel,
+                            );
+                          },
                         );
-                      }),
+                      }
+                    },
+                  ),
                   SizedBox(
                     height: media.width * 0.05,
                   ),

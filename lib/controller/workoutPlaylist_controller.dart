@@ -14,8 +14,10 @@ class WorkoutPlaylistController extends GetxController {
 
   @override
   void onInit() {
-    fetchWorkoutPlaylist();
-    super.onInit();
+    fetchWorkoutPlaylist().then((value) {
+      isLoading.value = false;
+      super.onInit();
+    });
   }
 
   Future<void> fetchWorkoutPlaylist() async {
@@ -23,7 +25,7 @@ class WorkoutPlaylistController extends GetxController {
       isLoading.value = true;
       final workoutPlaylist =
           await _workoutPlaylistService.getWorkoutPlaylist();
-      /*  print(workoutPlaylist); */
+      print(workoutPlaylist); // print the data
 
       allWorkoutPlaylist.assignAll(workoutPlaylist);
      /*  print(allWorkoutPlaylist.length);

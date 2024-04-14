@@ -15,7 +15,6 @@ class WorkoutPlaylistService extends GetxController {
           .map((doc) => WorkoutPlaylistModel.fromSnapshot(doc))
           .toList();
       print(list.length);
-
      /*  list.forEach((playlist) {
         print('Title: ${playlist.title}');
         print('Time: ${playlist.time}');
