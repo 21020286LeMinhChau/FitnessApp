@@ -1,34 +1,30 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fitness/common_widget/upcoming_workout_row.dart';
 import 'package:fitness/model/workout_playlist_model.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
 
-class WorkoutPlaylistService extends StatelessWidget {
-  final String pid;
-  WorkoutPlaylistService({required this.pid});
+class WorkoutPlaylistService extends GetxController {
+  static WorkoutPlaylistService get to => Get.find();
+  final _db = FirebaseFirestore.instance;
 
-  @override
-  Widget build(BuildContext context) {
-    final CollectionReference workoutPlaylistCollection =
-        FirebaseFirestore.instance.collection('workoutPlaylist');
+  /// Get all workout playlist
+  Future<List<WorkoutPlaylistModel>> getWorkoutPlaylist() async {
+    try {
+      final snapshot = await _db.collection('workoutPlaylist').get();
+      final list = snapshot.docs
+          .map((doc) => WorkoutPlaylistModel.fromSnapshot(doc))
+          .toList();
+      print(list.length);
 
-    // Fetch the document snapshot using the provided 'pid'
-
-    return FutureBuilder<DocumentSnapshot>(
-      future: workoutPlaylistCollection.doc(pid).get(),
-      builder: ((context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          Map<String, dynamic> data =
-              snapshot.data!.data() as Map<String, dynamic>;
-          WorkoutPlaylistModel workoutPlaylistItem = WorkoutPlaylistModel(
-            title: data['title'],
-            time: data['time'],
-            image: data['image'],
-          );
-          return UpcomingWorkoutRow(workoutPlaylistItem: workoutPlaylistItem);
-        }
-        return const CircularProgressIndicator();
-      }),
-    );
+     /*  list.forEach((playlist) {
+        print('Title: ${playlist.title}');
+        print('Time: ${playlist.time}');
+        print('Image: ${playlist.image}');
+        // In ra các thuộc tính khác nếu cần
+      }); */
+      return list;
+    } catch (e) {
+      throw 'Something went wrong. Please try again';
+    }
   }
 }

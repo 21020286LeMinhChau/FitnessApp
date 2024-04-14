@@ -34,18 +34,18 @@ class _UpcomingWorkoutRowState extends State<UpcomingWorkoutRow> {
             boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 2)]),
         child: Row(
           children: [
-            /*   ClipRRect(
+             ClipRRect(
               borderRadius: BorderRadius.circular(30),
               child: Image.asset(
-                widget.wObj["image"].toString(),
+                widget.workoutPlaylistItem.image.toString(),
                 width: 50,
                 height: 50,
                 fit: BoxFit.cover,
               ),
-            ), */
+            ),
             const SizedBox(
               width: 15,
-            ),
+            ), 
             Expanded(
                 child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,13 +57,14 @@ class _UpcomingWorkoutRowState extends State<UpcomingWorkoutRow> {
                       fontSize: 12,
                       fontWeight: FontWeight.w500),
                 ),
-                /*  Text(
-                  widget.wObj["time"].toString(),
+                Text(
+                  widget.workoutPlaylistItem.time,
                   style: TextStyle(
                     color: TColor.gray,
                     fontSize: 10,
                   ),
-                ), */
+                ),
+                
               ],
             )),
             LoadSwitch(

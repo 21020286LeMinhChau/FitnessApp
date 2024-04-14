@@ -1,10 +1,14 @@
+import 'dart:ffi';
+
 import 'package:fitness/common/color_extension.dart';
+import 'package:fitness/controller/workoutPlaylist_controller.dart';
 import 'package:fitness/model/workout_playlist_model.dart';
 import 'package:fitness/view/meal_planner/meal_planner_view.dart';
 import 'package:fitness/view/workout_tracker/add_schedule_view.dart';
 import 'package:fitness/view/workout_tracker/workour_detail_view.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../common_widget/round_button.dart';
 import '../../common_widget/upcoming_workout_row.dart';
@@ -21,16 +25,7 @@ class WorkoutTrackerView extends StatefulWidget {
 }
 
 class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
-  int displayedItemCount = 1;
-  List<String> pIDs = [];
-  //get the list of pIDs from the Firestore collection
-  Future getPlaylistIDs() async {
-    await FirebaseFirestore.instance.collection('workoutPlaylist').get().then(
-          (snapshot) => snapshot.docs.forEach((doc) {
-            pIDs.add(doc.reference.id);
-          }),
-        );
-  }
+  int displayedItemCount = 2;
 
   List latestArr = [
     {
@@ -74,6 +69,7 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
+    final workoutPlaylistController = Get.put(WorkoutPlaylistController());
 
     return Container(
       decoration:
@@ -339,18 +335,18 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
                     ],
                   ),
                   ListView.builder(
-                    padding: EdgeInsets.zero,
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: displayedItemCount,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: WorkoutPlaylistService(
-                          pid: pIDs[index],
-                        ),
-                      );
-                    },
-                  ),
+                      padding: EdgeInsets.zero,
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: displayedItemCount,
+                      itemBuilder: (_, index) {
+                        final playlist =
+                            workoutPlaylistController.allWorkoutPlaylist[index];
+                        print(workoutPlaylistController.isLoading.value);
+                        return UpcomingWorkoutRow(
+                          workoutPlaylistItem: playlist,
+                        );
+                      }),
                   SizedBox(
                     height: media.width * 0.05,
                   ),
