@@ -99,7 +99,7 @@ class _ProfileViewState extends State<ProfileView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Stefani Wong",
+                          "Huyen Tram",
                           style: TextStyle(
                             color: TColor.black,
                             fontSize: 14,
