@@ -61,6 +61,7 @@ dependencies:
   tuple: ^2.0.2
   provider: ^6.1.2
   get: ^4.3.8
+  flutter_switch: ^0.3.2
 
 dependency_overrides:
   intl: ^0.18.1

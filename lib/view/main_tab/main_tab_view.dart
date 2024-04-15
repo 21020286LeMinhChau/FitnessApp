@@ -28,34 +28,34 @@ class _MainTabViewState extends State<MainTabView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: TColor.white,
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: SizedBox(
-        width: 70,
-        height: 70,
-        child: InkWell(
-          onTap: () {},
-          child: Container(
-            width: 65,
-            height: 65,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(colors: TColor.primaryG),
-              borderRadius: BorderRadius.circular(35),
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 2,
-                  offset: Offset(0, -2),
-                )
-              ],
-            ),
-            child: Icon(
-              Icons.search,
-              color: TColor.white,
-              size: 35,
-            ),
-          ),
-        ),
-      ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      // floatingActionButton: SizedBox(
+      //   width: 70,
+      //   height: 70,
+      //   child: InkWell(
+      //     onTap: () {},
+      //     child: Container(
+      //       width: 65,
+      //       height: 65,
+      //       decoration: BoxDecoration(
+      //         gradient: LinearGradient(colors: TColor.primaryG),
+      //         borderRadius: BorderRadius.circular(35),
+      //         boxShadow: const [
+      //           BoxShadow(
+      //             color: Colors.black12,
+      //             blurRadius: 2,
+      //             offset: Offset(0, -2),
+      //           )
+      //         ],
+      //       ),
+      //       child: Icon(
+      //         Icons.search,
+      //         color: TColor.white,
+      //         size: 35,
+      //       ),
+      //     ),
+      //   ),
+      // ),
       body: PageStorage(bucket: pageBucket, child: currentTab),
       bottomNavigationBar: BottomAppBar(
         // color: TColor.white,
@@ -99,23 +99,23 @@ class _MainTabViewState extends State<MainTabView> {
                   }
                 },
               ),
-              TabButton(
-                // icon: "assets/img/camera_tab.png",
-                icon: "assets/img/run_tab.png",
-                selectIcon: "assets/img/run_tab.png",
-                isActive: selectTab == TabView.mapView,
-                onTap: () {
-                  // selectTab = TabView.mapView;
-                  // // currentTab = PhotoProgressView();\
-                  // currentTab = MapView();
-                  // if (mounted) {
-                  //   setState(() {});
-                  // }
-                },
-              ),
-              SizedBox(
-                width: 40,
-              ),
+              // TabButton(
+              //   // icon: "assets/img/camera_tab.png",
+              //   icon: "assets/img/run_tab.png",
+              //   selectIcon: "assets/img/run_tab.png",
+              //   isActive: selectTab == TabView.mapView,
+              //   onTap: () {
+              //     // selectTab = TabView.mapView;
+              //     // // currentTab = PhotoProgressView();\
+              //     // currentTab = MapView();
+              //     // if (mounted) {
+              //     //   setState(() {});
+              //     // }
+              //   },
+              // ),
+              // SizedBox(
+              //   width: 40,
+              // ),
               TabButton(
                 icon: "assets/img/camera_tab.png",
                 selectIcon: "assets/img/camera_tab_select.png",
