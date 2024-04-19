@@ -1,11 +1,26 @@
 import 'package:fitness/common_widget/round_button.dart';
+import 'package:fitness/model/workout_playlist_model.dart';
 import 'package:flutter/material.dart';
 
 import '../common/color_extension.dart';
 
-class WhatTrainRow extends StatelessWidget {
-  final Map wObj;
-  const WhatTrainRow({super.key, required this.wObj});
+class WhatTrainRow extends StatefulWidget {
+/*   final Map wObj;
+ */
+  final WorkoutPlaylistModel workoutPlaylistItem;
+
+  WhatTrainRow({required this.workoutPlaylistItem});
+
+  @override
+  State<WhatTrainRow> createState() => _WhatTrainRowState();
+}
+
+class _WhatTrainRowState extends State<WhatTrainRow> {
+  bool positive = false;
+  Future<bool> _getFuture() async {
+    await Future.delayed(const Duration(seconds: 1));
+    return !positive;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +46,7 @@ class WhatTrainRow extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      wObj["title"].toString(),
+                      widget.workoutPlaylistItem.title,
                       style: TextStyle(
                           color: TColor.black,
                           fontSize: 14,
@@ -41,7 +56,7 @@ class WhatTrainRow extends StatelessWidget {
                       height: 4,
                     ),
                     Text(
-                      "${wObj["exercises"].toString()} | ${wObj["time"].toString()}",
+                      "${widget.workoutPlaylistItem.exercise} exercises | ${widget.workoutPlaylistItem.time}",
                       style: TextStyle(
                         color: TColor.gray,
                         fontSize: 12,
@@ -81,10 +96,10 @@ class WhatTrainRow extends StatelessWidget {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(30),
                     child: Image.asset(
-                      wObj["image"].toString(),
+                      widget.workoutPlaylistItem.image.toString(),
                       width: 90,
                       height: 90,
-                      fit: BoxFit.contain,
+                      fit: BoxFit.fill,
                     ),
                   ),
                 ],

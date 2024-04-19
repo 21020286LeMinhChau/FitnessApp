@@ -28,18 +28,22 @@ class WorkoutPlaylistController extends GetxController {
       print(workoutPlaylist); // print the data
 
       allWorkoutPlaylist.assignAll(workoutPlaylist);
-     /*  print(allWorkoutPlaylist.length);
-      allWorkoutPlaylist.forEach((element) => {
-            print(element.title),
-            print(element.image),
-          }); */
-/*       print(allWorkoutPlaylist);
- */ /* featuredWorkoutPlaylist.assignAll(workoutPlaylist
-          .where((element) => element.isFeatured && element.parentId.isEmpty)
+    } catch (e) {
+      print(e);
+    } finally {}
+  }
+
+  Future<void> fetchFeaturedWorkoutPlaylist() async {
+    try {
+      isLoading.value = true;
+      final workoutPlaylist =
+          await _workoutPlaylistService.getWorkoutPlaylist();
+      featuredWorkoutPlaylist.assignAll(workoutPlaylist
+          .where((element) => element.isFeatured)
           .take(3)
-          .toList()); */
-/*       print(featuredWorkoutPlaylist);
- */
+          .toList());
+      print('hihi');
+      print(featuredWorkoutPlaylist);
     } catch (e) {
       print(e);
     } finally {}

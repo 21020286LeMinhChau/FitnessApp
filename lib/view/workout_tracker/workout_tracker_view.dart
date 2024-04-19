@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:fitness/common/color_extension.dart';
 import 'package:fitness/controller/workoutPlaylist_controller.dart';
 import 'package:fitness/model/workout_playlist_model.dart';
@@ -26,7 +24,8 @@ class WorkoutTrackerView extends StatefulWidget {
 
 class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
   int displayedItemCount = 2;
-
+  int listlength = 0;
+  int listFeaturedLength = 0;
   List latestArr = [
     {
       "image": "assets/img/Workout1.png",
@@ -71,9 +70,20 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
     var media = MediaQuery.of(context).size;
     final workoutPlaylistController = Get.put(WorkoutPlaylistController());
 
-    Future<RxList<WorkoutPlaylistModel>> fetchWorkoutPlaylistController() async {
+    Future<RxList<WorkoutPlaylistModel>>
+        fetchWorkoutPlaylistController() async {
       await workoutPlaylistController.fetchWorkoutPlaylist();
+
+      listlength = workoutPlaylistController.allWorkoutPlaylist.length;
       return Future.value(workoutPlaylistController.allWorkoutPlaylist);
+    }
+
+    Future<RxList<WorkoutPlaylistModel>>
+        fetchFeaturedWorkoutPlaylistController() async {
+      await workoutPlaylistController.fetchFeaturedWorkoutPlaylist();
+      listFeaturedLength =
+          workoutPlaylistController.featuredWorkoutPlaylist.length;
+      return Future.value(workoutPlaylistController.featuredWorkoutPlaylist);
     }
 
     return Container(
@@ -325,8 +335,9 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
                       TextButton(
                         onPressed: () {
                           setState(() {
-                            displayedItemCount =
-                                displayedItemCount == 2 ? latestArr.length : 2;
+                            displayedItemCount = displayedItemCount == 2
+                                ? listFeaturedLength
+                                : 2;
                           });
                         },
                         child: Text(
@@ -340,8 +351,9 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
                     ],
                   ),
                   FutureBuilder<List<WorkoutPlaylistModel>>(
-                    future: fetchWorkoutPlaylistController(),
-                    builder: (BuildContext context, AsyncSnapshot<List<WorkoutPlaylistModel>> snapshot) {
+                    future: fetchFeaturedWorkoutPlaylistController(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<List<WorkoutPlaylistModel>> snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return CircularProgressIndicator(); // or your custom loading widget
                       } else if (snapshot.hasError) {
@@ -356,7 +368,8 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
                             final playlist = snapshot.data?[index];
                             print(workoutPlaylistController.isLoading.value);
                             return UpcomingWorkoutRow(
-                              workoutPlaylistItem: playlist as WorkoutPlaylistModel,
+                              workoutPlaylistItem:
+                                  playlist as WorkoutPlaylistModel,
                             );
                           },
                         );
@@ -378,7 +391,38 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
                       ),
                     ],
                   ),
-                  ListView.builder(
+                  FutureBuilder<List<WorkoutPlaylistModel>>(
+                    future: fetchWorkoutPlaylistController(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<List<WorkoutPlaylistModel>> snapshot) {
+                      {
+                        return ListView.builder(
+                          padding: EdgeInsets.zero,
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: listlength,
+                          itemBuilder: (_, index) {
+                            final playlist = snapshot.data?[index];
+                            print(workoutPlaylistController.isLoading.value);
+                            return InkWell(
+                                onTap: () {
+                                /*   Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => WorkoutDetailView(
+                                          dObj: wObj,
+                                          ))); */
+                                },
+                                child: WhatTrainRow(
+                                  workoutPlaylistItem:
+                                      playlist as WorkoutPlaylistModel,
+                                ));
+                          },
+                        );
+                      }
+                    },
+                  ),
+                  /*  ListView.builder(
                       padding: EdgeInsets.zero,
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
@@ -395,7 +439,7 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
                                           )));
                             },
                             child: WhatTrainRow(wObj: wObj));
-                      }),
+                      }), */
                   SizedBox(
                     height: media.width * 0.1,
                   ),

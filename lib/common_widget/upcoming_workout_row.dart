@@ -34,7 +34,7 @@ class _UpcomingWorkoutRowState extends State<UpcomingWorkoutRow> {
             boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 2)]),
         child: Row(
           children: [
-             ClipRRect(
+            ClipRRect(
               borderRadius: BorderRadius.circular(30),
               child: Image.asset(
                 widget.workoutPlaylistItem.image.toString(),
@@ -45,7 +45,7 @@ class _UpcomingWorkoutRowState extends State<UpcomingWorkoutRow> {
             ),
             const SizedBox(
               width: 15,
-            ), 
+            ),
             Expanded(
                 child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,7 +64,6 @@ class _UpcomingWorkoutRowState extends State<UpcomingWorkoutRow> {
                     fontSize: 10,
                   ),
                 ),
-                
               ],
             )),
             LoadSwitch(
