@@ -1,5 +1,6 @@
 import 'package:fitness/common/color_extension.dart';
 import 'package:fitness/common_widget/round_button.dart';
+import 'package:fitness/view/heart_bpm/heart_bpm_view.dart';
 import 'package:fitness/view/meal_planner/meal_planner_view.dart';
 import 'package:fitness/view/sleep_tracker/sleep_tracker_view.dart';
 import 'package:fitness/view/workout_tracker/workout_tracker_view.dart';
@@ -17,6 +18,56 @@ class SelectView extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border:
+                    Border.all(color: TColor.primaryColor1.withOpacity(0.5)),
+                boxShadow: [
+                  BoxShadow(
+                    color: TColor.primaryColor1.withOpacity(0.7),
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                    offset: const Offset(0, 3), // changes position of shadow
+                  ),
+                ],
+              ),
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const HeartBpmView(),
+                    ),
+                  );
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Image.asset(
+                      'assets/img/sleep.png',
+                      width: 100,
+                      height: 100,
+                    ),
+                    SizedBox(
+                      width: media.width * 0.05,
+                    ),
+                    const Text(
+                      'Heart BPM Tracker',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 15,
+            ),
             Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
@@ -159,7 +210,7 @@ class SelectView extends StatelessWidget {
                   ],
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
