@@ -30,29 +30,29 @@ class _WelcomeViewState extends State<WelcomeView> {
                 height: media.width * 0.1,
               ),
               Image.asset(
-                "assets/img/welcome.png",
+                "assets/img/welcome2.jpg",
                 width: media.width * 0.75,
                 fit: BoxFit.fitWidth,
               ),
               SizedBox(
                 height: media.width * 0.1,
               ),
-              Text(
-                "Welcome, Stefani",
-                style: TextStyle(
-                    color: TColor.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700),
-              ),
+              // Text(
+              //   "Welcome, Stefani",
+              //   style: TextStyle(
+              //       color: TColor.black,
+              //       fontSize: 20,
+              //       fontWeight: FontWeight.w700),
+              // ),
               Text(
                 "You are all set now, let’s reach your\ngoals together with us",
                 textAlign: TextAlign.center,
-                style: TextStyle(color: TColor.gray, fontSize: 12),
+                style: TextStyle(color: TColor.black, fontSize: 16),
               ),
               const Spacer(),
 
               RoundButton(
-                  title: "Go To Home",
+                  title: "Goooooo !!!",
                   onPressed: () {
                     Navigator.push(
                         context,

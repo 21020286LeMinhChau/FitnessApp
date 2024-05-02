@@ -1,11 +1,19 @@
 import 'package:fitness/common/color_extension.dart';
+import 'package:fitness/controller/workoutPlaylist_controller.dart';
+import 'package:fitness/model/workout_playlist_model.dart';
+import 'package:fitness/view/meal_planner/meal_planner_view.dart';
+import 'package:fitness/view/workout_tracker/add_schedule_view.dart';
 import 'package:fitness/view/workout_tracker/workour_detail_view.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../common_widget/round_button.dart';
 import '../../common_widget/upcoming_workout_row.dart';
 import '../../common_widget/what_train_row.dart';
+
+import 'package:fitness/service/workout_playlist.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class WorkoutTrackerView extends StatefulWidget {
   const WorkoutTrackerView({super.key});
@@ -15,11 +23,19 @@ class WorkoutTrackerView extends StatefulWidget {
 }
 
 class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
+  int displayedItemCount = 2;
+  int listlength = 0;
+  int listFeaturedLength = 0;
   List latestArr = [
     {
       "image": "assets/img/Workout1.png",
       "title": "Fullbody Workout",
       "time": "Today, 03:00pm"
+    },
+    {
+      "image": "assets/img/Workout2.png",
+      "title": "Upperbody Workout",
+      "time": "June 05, 02:00pm"
     },
     {
       "image": "assets/img/Workout2.png",
@@ -52,6 +68,24 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
+    final workoutPlaylistController = Get.put(WorkoutPlaylistController());
+
+    Future<RxList<WorkoutPlaylistModel>>
+        fetchWorkoutPlaylistController() async {
+      await workoutPlaylistController.fetchWorkoutPlaylist();
+
+      listlength = workoutPlaylistController.allWorkoutPlaylist.length;
+      return Future.value(workoutPlaylistController.allWorkoutPlaylist);
+    }
+
+    Future<RxList<WorkoutPlaylistModel>>
+        fetchFeaturedWorkoutPlaylistController() async {
+      await workoutPlaylistController.fetchFeaturedWorkoutPlaylist();
+      listFeaturedLength =
+          workoutPlaylistController.featuredWorkoutPlaylist.length;
+      return Future.value(workoutPlaylistController.featuredWorkoutPlaylist);
+    }
+
     return Container(
       decoration:
           BoxDecoration(gradient: LinearGradient(colors: TColor.primaryG)),
@@ -272,13 +306,13 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
                             onPressed: () {
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (context) =>
-                              //         const ActivityTrackerView(),
-                              //   ),
-                              // );
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const MealPlannerView(), // TODO: Add Schedule View
+                                ),
+                              );
                             },
                           ),
                         )
@@ -299,9 +333,15 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
                             fontWeight: FontWeight.w700),
                       ),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          setState(() {
+                            displayedItemCount = displayedItemCount == 2
+                                ? listFeaturedLength
+                                : 2;
+                          });
+                        },
                         child: Text(
-                          "See More",
+                          displayedItemCount == 2 ? "See More" : "See Less",
                           style: TextStyle(
                               color: TColor.gray,
                               fontSize: 14,
@@ -310,15 +350,32 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
                       )
                     ],
                   ),
-                  ListView.builder(
-                      padding: EdgeInsets.zero,
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: latestArr.length,
-                      itemBuilder: (context, index) {
-                        var wObj = latestArr[index] as Map? ?? {};
-                        return UpcomingWorkoutRow(wObj: wObj);
-                      }),
+                  FutureBuilder<List<WorkoutPlaylistModel>>(
+                    future: fetchFeaturedWorkoutPlaylistController(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<List<WorkoutPlaylistModel>> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator(); // or your custom loading widget
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        return ListView.builder(
+                          padding: EdgeInsets.zero,
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: displayedItemCount,
+                          itemBuilder: (_, index) {
+                            final playlist = snapshot.data?[index];
+                            print(workoutPlaylistController.isLoading.value);
+                            return UpcomingWorkoutRow(
+                              workoutPlaylistItem:
+                                  playlist as WorkoutPlaylistModel,
+                            );
+                          },
+                        );
+                      }
+                    },
+                  ),
                   SizedBox(
                     height: media.width * 0.05,
                   ),
@@ -334,7 +391,38 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
                       ),
                     ],
                   ),
-                  ListView.builder(
+                  FutureBuilder<List<WorkoutPlaylistModel>>(
+                    future: fetchWorkoutPlaylistController(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<List<WorkoutPlaylistModel>> snapshot) {
+                      {
+                        return ListView.builder(
+                          padding: EdgeInsets.zero,
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: listlength,
+                          itemBuilder: (_, index) {
+                            final playlist = snapshot.data?[index];
+                            print(workoutPlaylistController.isLoading.value);
+                            return InkWell(
+                                onTap: () {
+                                /*   Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => WorkoutDetailView(
+                                          dObj: wObj,
+                                          ))); */
+                                },
+                                child: WhatTrainRow(
+                                  workoutPlaylistItem:
+                                      playlist as WorkoutPlaylistModel,
+                                ));
+                          },
+                        );
+                      }
+                    },
+                  ),
+                  /*  ListView.builder(
                       padding: EdgeInsets.zero,
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
@@ -342,11 +430,16 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
                       itemBuilder: (context, index) {
                         var wObj = whatArr[index] as Map? ?? {};
                         return InkWell(
-                          onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context) =>  WorkoutDetailView( dObj: wObj, ) ));
-                          },
-                          child:  WhatTrainRow(wObj: wObj) );
-                      }),
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => WorkoutDetailView(
+                                            dObj: wObj,
+                                          )));
+                            },
+                            child: WhatTrainRow(wObj: wObj));
+                      }), */
                   SizedBox(
                     height: media.width * 0.1,
                   ),
