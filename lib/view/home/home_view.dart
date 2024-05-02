@@ -1,14 +1,18 @@
 import 'package:dotted_dashed_line/dotted_dashed_line.dart';
 import 'package:fitness/common_widget/round_button.dart';
 import 'package:fitness/common_widget/workout_row.dart';
+import 'package:fitness/model/user.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_animation_progress_bar/simple_animation_progress_bar.dart';
 import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 import '../../common/color_extension.dart';
 import 'activity_tracker_view.dart';
+import 'bmi_calculator.dart';
 import 'finished_workout_view.dart';
 import 'notification_view.dart';
+import 'package:logger/logger.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -18,6 +22,43 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  final logger = Logger();
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUser();
+  }
+
+  String userId = '';
+  static User user = User();
+  static double BMI = 0;
+
+  Future<void> _loadUserId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userId = prefs.getString('user_id') ?? 'No user ID found'; // If 'id_user' doesn't exist, show a default message
+    });
+  }
+
+  Future<void> fetchUser() async {
+    await _loadUserId();
+    try {
+      User? fetchedUser = await User.getUserById(userId);
+      if (fetchedUser != null) {
+        user = fetchedUser;
+        double height = double.parse(user.height) / 100;
+        BMI = double.parse(user.weight) / (height * height);
+        BMI = double.parse((BMI).toStringAsFixed(1));
+        setState(() {});
+      } else {
+        logger.i('User not found');
+      }
+    }catch (e){
+      logger.e(e);
+    }
+  }
+
   List lastWorkoutArr = [
     {
       "name": "Full Body Workout",
@@ -85,10 +126,10 @@ class _HomeViewState extends State<HomeView> {
     {"title": "4pm - now", "subtitle": "900ml"},
   ];
 
+
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
-
     final lineBarsData = [
       LineChartBarData(
         showingIndicators: showingTooltipOnSpots,
@@ -102,7 +143,7 @@ class _HomeViewState extends State<HomeView> {
             TColor.primaryColor1.withOpacity(0.1),
           ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
         ),
-        dotData: FlDotData(show: false),
+        dotData: const FlDotData(show: false),
         gradient: LinearGradient(
           colors: TColor.primaryG,
         ),
@@ -131,7 +172,7 @@ class _HomeViewState extends State<HomeView> {
                           style: TextStyle(color: TColor.gray, fontSize: 12),
                         ),
                         Text(
-                          "Stefani Wong",
+                          '${user.firstName} ${user.lastName}',
                           style: TextStyle(
                               color: TColor.black,
                               fontSize: 20,
@@ -189,7 +230,7 @@ class _HomeViewState extends State<HomeView> {
                                     fontWeight: FontWeight.w700),
                               ),
                               Text(
-                                "You have a normal weight",
+                                bodyStatus(BMI),
                                 style: TextStyle(
                                     color: TColor.white.withOpacity(0.7),
                                     fontSize: 12),
@@ -205,7 +246,19 @@ class _HomeViewState extends State<HomeView> {
                                       type: RoundButtonType.bgSGradient,
                                       fontSize: 12,
                                       fontWeight: FontWeight.w400,
-                                      onPressed: () {}))
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => InputPage(
+                                              height: int.parse(user.height),
+                                              age: calculateAge(user.dateOfBirth),
+                                              gender: user.gender,
+                                              weight: int.parse(user.weight),
+                                            ),
+                                          ),
+                                        );
+                                      }))
                             ],
                           ),
                           AspectRatio(
@@ -222,7 +275,7 @@ class _HomeViewState extends State<HomeView> {
                                 ),
                                 sectionsSpace: 1,
                                 centerSpaceRadius: 0,
-                                sections: showingSections(),
+                                sections: showingSections(BMI),
                               ),
                             ),
                           ),
@@ -377,7 +430,7 @@ class _HomeViewState extends State<HomeView> {
                                   List<int> spotIndexes) {
                                 return spotIndexes.map((index) {
                                   return TouchedSpotIndicatorData(
-                                    FlLine(
+                                    const FlLine(
                                       color: Colors.red,
                                     ),
                                     FlDotData(
@@ -415,10 +468,10 @@ class _HomeViewState extends State<HomeView> {
                             lineBarsData: lineBarsData,
                             minY: 0,
                             maxY: 130,
-                            titlesData: FlTitlesData(
+                            titlesData: const FlTitlesData(
                               show: false,
                             ),
-                            gridData: FlGridData(show: false),
+                            gridData: const FlGridData(show: false),
                             borderData: FlBorderData(
                               show: true,
                               border: Border.all(
@@ -830,7 +883,7 @@ class _HomeViewState extends State<HomeView> {
                               List<int> spotIndexes) {
                             return spotIndexes.map((index) {
                               return TouchedSpotIndicatorData(
-                                FlLine(
+                                const FlLine(
                                   color: Colors.transparent,
                                 ),
                                 FlDotData(
@@ -869,9 +922,9 @@ class _HomeViewState extends State<HomeView> {
                         maxY: 110,
                         titlesData: FlTitlesData(
                             show: true,
-                            leftTitles: AxisTitles(),
-                            topTitles: AxisTitles(),
-                            bottomTitles: AxisTitles(
+                            leftTitles: const AxisTitles(),
+                            topTitles: const AxisTitles(),
+                            bottomTitles:AxisTitles(
                               sideTitles: bottomTitles,
                             ),
                             rightTitles: AxisTitles(
@@ -952,7 +1005,19 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  List<PieChartSectionData> showingSections() {
+  String bodyStatus (double BMI){
+      if(BMI < 18.5){
+        return "You are underweight";
+      }
+      if(BMI >= 18.5 && BMI <= 22.9){
+        return "You have a normal weight";
+      }
+      else{
+        return "You are overweight";
+      }
+  }
+
+  List<PieChartSectionData> showingSections(double BMI) {
     return List.generate(
       2,
           (i) {
@@ -962,12 +1027,12 @@ class _HomeViewState extends State<HomeView> {
           case 0:
             return PieChartSectionData(
                 color: color0,
-                value: 33,
+                value: BMI,
                 title: '',
                 radius: 55,
                 titlePositionPercentageOffset: 0.55,
-                badgeWidget: const Text(
-                  "20,1",
+                badgeWidget: Text(
+                  BMI.toString(),
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 12,
@@ -976,7 +1041,7 @@ class _HomeViewState extends State<HomeView> {
           case 1:
             return PieChartSectionData(
               color: Colors.white,
-              value: 75,
+              value: 100 - BMI,
               title: '',
               radius: 45,
               titlePositionPercentageOffset: 0.55,
@@ -996,6 +1061,20 @@ class _HomeViewState extends State<HomeView> {
     ),
   );
 
+  int calculateAge(String birthDate) {
+    List<String> parts = birthDate.split('/');
+    int day = int.parse(parts[0]);
+    int month = int.parse(parts[1]);
+    int year = int.parse(parts[2]);
+    DateTime date = DateTime(year, month, day);
+    final now = DateTime.now();
+    int age = now.year - date.year;
+    if (now.month < date.month || (now.month == date.month && now.day < date.day)) {
+      age--;
+    }
+    return age;
+  }
+
   List<LineChartBarData> get lineBarsData1 => [
     lineChartBarData1_1,
     lineChartBarData1_2,
@@ -1009,7 +1088,7 @@ class _HomeViewState extends State<HomeView> {
     ]),
     barWidth: 4,
     isStrokeCapRound: true,
-    dotData: FlDotData(show: false),
+    dotData: const FlDotData(show: false),
     belowBarData: BarAreaData(show: false),
     spots: const [
       FlSpot(1, 35),
@@ -1030,7 +1109,7 @@ class _HomeViewState extends State<HomeView> {
     ]),
     barWidth: 2,
     isStrokeCapRound: true,
-    dotData: FlDotData(show: false),
+    dotData: const FlDotData(show: false),
     belowBarData: BarAreaData(
       show: false,
     ),
