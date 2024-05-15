@@ -1,92 +1,83 @@
 // TODO Implement this library.import 'package:fitness/common/colo_extension.dart';
 import 'package:fitness/common_widget/icon_title_next_row.dart';
 import 'package:fitness/common_widget/round_button.dart';
+import 'package:fitness/model/excersise.dart';
+import 'package:fitness/model/setExercise.dart';
+import 'package:fitness/model/tool.dart';
+import 'package:fitness/model/workout_playlist_model.dart';
+import 'package:fitness/service/excercise_playlist.dart';
+import 'package:fitness/service/setExercise_playlist.dart';
 import 'package:fitness/view/workout_tracker/exercises_stpe_details.dart';
 import 'package:fitness/view/workout_tracker/workout_schedule_view.dart';
 import 'package:flutter/material.dart';
 import '../../common/color_extension.dart';
 
 import '../../common_widget/exercises_set_section.dart';
+import '../../service/tool_playlist.dart';
 
 class WorkoutDetailView extends StatefulWidget {
-  final Map dObj;
-  const WorkoutDetailView({super.key, required this.dObj});
-
+/*   final Map dObj;
+ */
+  final WorkoutPlaylistModel workoutDetailItemView;
+  final String id;
+  WorkoutDetailView({required this.workoutDetailItemView, required this.id});
   @override
   State<WorkoutDetailView> createState() => _WorkoutDetailViewState();
 }
 
 class _WorkoutDetailViewState extends State<WorkoutDetailView> {
-  List latestArr = [
-    {
-      "image": "assets/img/Workout1.png",
-      "title": "Fullbody Workout",
-      "time": "Today, 03:00pm"
-    },
-    {
-      "image": "assets/img/Workout2.png",
-      "title": "Upperbody Workout",
-      "time": "June 05, 02:00pm"
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+    test(widget.id);
+  }
 
-  List youArr = [
-    {"image": "assets/img/barbell.png", "title": "Barbell"},
-    {"image": "assets/img/skipping_rope.png", "title": "Skipping Rope"},
-    {"image": "assets/img/bottle.png", "title": "Bottle 1 Liters"},
-  ];
+  List<Map<String, String>> youArr = [];
+  List<Map<String, String>> setArr = [];
+  int count = 0;
+  test(String id) async {
+    ToolService toolService = ToolService();
+    List<ToolModel> listTool =
+        await toolService.getToolPlayListByWorkOutPlayListId(id);
 
-  List exercisesArr = [
-    {
-      "name": "Set 1",
-      "set": [
-        {"image": "assets/img/img_1.png", "title": "Warm Up", "value": "05:00"},
-        {
-          "image": "assets/img/img_2.png",
-          "title": "Jumping Jack",
-          "value": "12x"
-        },
-        {"image": "assets/img/img_1.png", "title": "Skipping", "value": "15x"},
-        {"image": "assets/img/img_2.png", "title": "Squats", "value": "20x"},
-        {
-          "image": "assets/img/img_1.png",
-          "title": "Arm Raises",
-          "value": "00:53"
-        },
-        {
-          "image": "assets/img/img_2.png",
-          "title": "Rest and Drink",
-          "value": "02:00"
-        },
-      ],
-    },
-    {
-      "name": "Set 2",
-      "set": [
-        {"image": "assets/img/img_1.png", "title": "Warm Up", "value": "05:00"},
-        {
-          "image": "assets/img/img_2.png",
-          "title": "Jumping Jack",
-          "value": "12x"
-        },
-        {"image": "assets/img/img_1.png", "title": "Skipping", "value": "15x"},
-        {"image": "assets/img/img_2.png", "title": "Squats", "value": "20x"},
-        {
-          "image": "assets/img/img_1.png",
-          "title": "Arm Raises",
-          "value": "00:53"
-        },
-        {
-          "image": "assets/img/img_2.png",
-          "title": "Rest and Drink",
-          "value": "02:00"
-        },
-      ],
-    }
-  ];
+    youArr = listTool
+        .map((tool) => {
+              "image": tool.image,
+              "title": tool.name,
+            })
+        .toList();
+    count = youArr.length;
+  }
+/* 
+  fetchExercise(String id) async {
+    ExerciseService exerciseService = ExerciseService();
+    List<ExerciselModel> listExercise =
+        await exerciseService.getExcercisePlayListByWorkOutPlayListId(id);
+    exercisesArr = listExercise
+        .map((exercise) => {
+              "image": exercise.image,
+              "title": exercise.title,
+            })
+        .toList();
+  } */
+
+  Future<List<SetExercisetModel>> fetchSetPlaylist(String id) async {
+    SetPlaylistService setPlaylistService = SetPlaylistService();
+    List<SetExercisetModel> listSet =
+        await setPlaylistService.getSetPlayListByWorkOutPlayListId(id);
+    setArr = listSet
+        .map((set) => {
+              "title": set.name,
+            })
+        .toList();
+    return listSet;
+    // Add this line to return the list of exercises
+  }
 
   @override
   Widget build(BuildContext context) {
+/*     test();
+ */
     var media = MediaQuery.of(context).size;
     return Container(
       decoration:
@@ -192,14 +183,14 @@ class _WorkoutDetailViewState extends State<WorkoutDetailView> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  widget.dObj["title"].toString(),
+                                  widget.workoutDetailItemView.title,
                                   style: TextStyle(
                                       color: TColor.black,
                                       fontSize: 16,
                                       fontWeight: FontWeight.w700),
                                 ),
                                 Text(
-                                  "${widget.dObj["exercises"].toString()} | ${widget.dObj["time"].toString()} | 320 Calories Burn",
+                                  "${widget.workoutDetailItemView.exercise} exercises | ${widget.workoutDetailItemView.long} | 320 Calories Burn",
                                   style: TextStyle(
                                       color: TColor.gray, fontSize: 12),
                                 ),
@@ -226,8 +217,11 @@ class _WorkoutDetailViewState extends State<WorkoutDetailView> {
                           time: "5/27, 09:00 AM",
                           color: TColor.primaryColor2.withOpacity(0.3),
                           onPressed: () {
-
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => const WorkoutScheduleView() )  );
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const WorkoutScheduleView()));
                           }),
                       SizedBox(
                         height: media.width * 0.02,
@@ -251,58 +245,80 @@ class _WorkoutDetailViewState extends State<WorkoutDetailView> {
                                 fontSize: 16,
                                 fontWeight: FontWeight.w700),
                           ),
-                          TextButton(
-                            onPressed: () {},
+                          /*  TextButton(
+                            onPressed: () async {
+                              var result = await test(widget.id);
+                              setState(() {
+                                count = result
+                                    .length; // assuming test() returns a list
+                              });
+                            },
                             child: Text(
-                              "${youArr.length} Items",
+                              "${count} Items",
                               style:
                                   TextStyle(color: TColor.gray, fontSize: 12),
                             ),
-                          )
+                          ) */
                         ],
                       ),
                       SizedBox(
                         height: media.width * 0.5,
-                        child: ListView.builder(
-                            padding: EdgeInsets.zero,
-                            scrollDirection: Axis.horizontal,
-                            shrinkWrap: true,
-                            itemCount: youArr.length,
-                            itemBuilder: (context, index) {
-                              var yObj = youArr[index] as Map? ?? {};
-                              return Container(
-                                  margin: const EdgeInsets.all(8),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        height: media.width * 0.35,
-                                        width: media.width * 0.35,
-                                        decoration: BoxDecoration(
+                        child: FutureBuilder(
+                          future: test(widget.id),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Center(child: CircularProgressIndicator());
+                            } else if (snapshot.error != null) {
+                              return Center(child: Text('An error occurred!'));
+                            } else {
+                              return ListView.builder(
+                                padding: EdgeInsets.zero,
+                                scrollDirection: Axis.horizontal,
+                                shrinkWrap: true,
+                                itemCount: count,
+                                itemBuilder: (context, index) {
+                                  var yObj = youArr[index] as Map? ?? {};
+                                  return Container(
+                                    margin: const EdgeInsets.all(8),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          height: media.width * 0.35,
+                                          width: media.width * 0.35,
+                                          decoration: BoxDecoration(
                                             color: TColor.lightGray,
                                             borderRadius:
-                                                BorderRadius.circular(15)),
-                                        alignment: Alignment.center,
-                                        child: Image.asset(
-                                          yObj["image"].toString(),
-                                          width: media.width * 0.2,
-                                          height: media.width * 0.2,
-                                          fit: BoxFit.contain,
+                                                BorderRadius.circular(15),
+                                          ),
+                                          alignment: Alignment.center,
+                                          child: Image.asset(
+                                            yObj["image"].toString(),
+                                            width: media.width * 0.8,
+                                            height: media.width * 0.8,
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(
-                                          yObj["title"].toString(),
-                                          style: TextStyle(
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(
+                                            yObj["title"].toString(),
+                                            style: TextStyle(
                                               color: TColor.black,
-                                              fontSize: 12),
+                                              fontSize: 12,
+                                            ),
+                                          ),
                                         ),
-                                      )
-                                    ],
-                                  ));
-                            }),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                            }
+                          },
+                        ),
                       ),
                       SizedBox(
                         height: media.width * 0.05,
@@ -327,27 +343,42 @@ class _WorkoutDetailViewState extends State<WorkoutDetailView> {
                           )
                         ],
                       ),
-                      ListView.builder(
-                          padding: EdgeInsets.zero,
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: exercisesArr.length,
-                          itemBuilder: (context, index) {
-                            var sObj = exercisesArr[index] as Map? ?? {};
-                            return ExercisesSetSection(
-                              sObj: sObj,
-                              onPressed: (obj) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ExercisesStepDetails(
-                                      eObj: obj,
-                                    ),
-                                  ),
+                      FutureBuilder(
+                        future: fetchSetPlaylist(widget.id),
+                        builder: (context,
+                            AsyncSnapshot<List<SetExercisetModel>> snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Center(child: CircularProgressIndicator());
+                          } else if (snapshot.error != null) {
+                            return Center(child: Text('An error occurred!'));
+                          } else {
+                            return ListView.builder(
+                              padding: EdgeInsets.zero,
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: 3,
+                              itemBuilder: (context, index) {
+                                final setPlaylist = snapshot.data?[index];
+                                return ExercisesSetSection(
+                                  setItem: setPlaylist as SetExercisetModel,
+                                  onPressed: (obj) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            ExercisesStepDetails(
+                                          eObj: obj,
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 );
                               },
                             );
-                          }),
+                          }
+                        },
+                      ),
                       SizedBox(
                         height: media.width * 0.1,
                       ),
