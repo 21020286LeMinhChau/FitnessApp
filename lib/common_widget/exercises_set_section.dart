@@ -17,10 +17,15 @@ class ExercisesSetSection extends StatelessWidget {
 
   const ExercisesSetSection({required this.onPressed, required this.setItem});
 
-  Future<List<ExerciselModel>> fetchExercise(String id) async {
+  
+
+  /* Future<List<ExerciselModel>> fetchExercise(String id) async {
     ExerciseService exerciseService = ExerciseService();
+    print("buoc 1");
+
     List<ExerciselModel> listExercise =
-        await exerciseService.getExcercisePlayListBySetPlayListId(id);
+        await exerciseService.getExercisePlayListBySetPlayListId("2");
+    print("buoc 2000");
 
     exerciseArr = listExercise
         .map((exercise) => {
@@ -28,6 +33,27 @@ class ExercisesSetSection extends StatelessWidget {
               "title": exercise.title,
             })
         .toList();
+    print(exerciseArr);
+    print("buoc 3");
+
+    return listExercise;
+  } */
+  Future<List<ExerciselModel>> fetchExercise2(String id) async {
+    ExerciseService exerciseService = ExerciseService();
+    print("buoc 1");
+
+    List<ExerciselModel> listExercise =
+        await exerciseService.getExercisePlayListByWorkOutPlayListId("1");
+    print("buoc 2000");
+
+    exerciseArr = listExercise
+        .map((exercise) => {
+              "image": exercise.image,
+              "title": exercise.title,
+            })
+        .toList();
+    print(exerciseArr);
+    print("buoc 3");
 
     return listExercise;
   }
@@ -47,7 +73,7 @@ class ExercisesSetSection extends StatelessWidget {
           height: 8,
         ),
         FutureBuilder(
-          future: fetchExercise("1"),
+          future: fetchExercise2("1"),
           builder: (context, AsyncSnapshot<List<ExerciselModel>> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());

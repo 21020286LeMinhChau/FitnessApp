@@ -36,20 +36,65 @@ class ExerciseService extends GetxController {
     }
   }
 
-  Future<List<ExerciselModel>> getExcercisePlayListBySetPlayListId(
+  /* Future<List<ExerciselModel>> getExercisePlayListBySetPlayListId(
       String setId) async {
     try {
-      print(2);
+      print("buoc 2");
 
-      SetExercisetModel setPlaylist =
-          await SetPlaylistService.to.getSetPlaylistById(setId);
-      print(setPlaylist.listExerciseId.length);
+      SetExercisetModel setPlayList = await SetPlaylistService.to
+          .getSetPlaylistById(setId); // Sử dụng tham số setId thay vì '2'
+      print("buoc 3");
+
+      print(setPlayList.listExerciseId.length);
       List<ExerciselModel> listExercise = [];
-      for (String exerciselId in setPlaylist.listExerciseId) {
-        ExerciselModel exercise = await getExerciseById(exerciselId);
+      for (String exerciseId in setPlayList.listExerciseId) {
+        ExerciselModel exercise = await getExerciseById(exerciseId);
         listExercise.add(exercise);
       }
+      print(listExercise);
+      return listExercise;
+    } catch (e) {
+      throw 'Something went wrong. Please try again';
+    }
+  } */
+  Future<List<ExerciselModel>> getExercisePlayListBySetPlayListId(
+      String playListId) async {
+    try {
+      print("buoc 2");
 
+      SetExercisetModel setPlaylist =
+          await SetPlaylistService.to.getSetPlaylistById(playListId);
+      print("buoc 30000");
+
+      print(setPlaylist.listExerciseId.length);
+      List<ExerciselModel> listExercise = [];
+      for (String exerciseId in setPlaylist.listExerciseId) {
+        ExerciselModel exercise = await getExerciseById(exerciseId);
+        listExercise.add(exercise);
+      }
+      print(listExercise);
+      return listExercise;
+    } catch (e) {
+      throw 'Something went wrong. Please try again';
+    }
+  }
+
+  Future<List<ExerciselModel>> getExercisePlayListByWorkOutPlayListId(
+      String playListId) async {
+    try {
+      print("buoc 2");
+
+      WorkoutPlaylistModel workoutPlayList =
+          await WorkoutPlaylistService.to.getWorkoutPlaylistById(playListId);
+      print("buoc 30000");
+
+      print(workoutPlayList.listExerciseId.length);
+      List<ExerciselModel> listExercise = [];
+      for (String exerciseId in workoutPlayList.listExerciseId) {
+        ExerciselModel exercise = await getExerciseById(exerciseId);
+        listExercise.add(exercise);
+      }
+      print(listExercise);
       return listExercise;
     } catch (e) {
       throw 'Something went wrong. Please try again';

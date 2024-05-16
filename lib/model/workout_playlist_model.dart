@@ -9,7 +9,7 @@ class WorkoutPlaylistModel {
   String long;
   String parentId;
   bool isFeatured;
-
+  List<String> listExerciseId;
   int exercise;
   List<String> listToolId;
   List<String> listSetId;
@@ -22,6 +22,7 @@ class WorkoutPlaylistModel {
       required this.exercise,
       required this.long,
       this.parentId = "",
+      required this.listExerciseId,
       required this.listToolId,
       required this.listSetId});
 
@@ -35,6 +36,7 @@ class WorkoutPlaylistModel {
       "long": long,
       "listToolId": listToolId,
       "listSetId": listSetId,
+      "listExerciseId": listExerciseId,
     };
   }
 
@@ -47,6 +49,7 @@ class WorkoutPlaylistModel {
       image: '',
       isFeatured: false,
       exercise: 0,
+      listExerciseId: [],
       listSetId: [],
       listToolId: [],
     );
@@ -74,6 +77,9 @@ class WorkoutPlaylistModel {
           ),
           listSetId: List<String>.from(
             data['listSetId'] ?? [],
+          ),
+          listExerciseId: List<String>.from(
+            data['listExerciseId'] ?? [],
           ));
     } else {
       // If the document doesn't exist, return an empty model

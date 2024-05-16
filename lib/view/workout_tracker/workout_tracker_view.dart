@@ -1,7 +1,9 @@
 import 'package:fitness/common/color_extension.dart';
 import 'package:fitness/controller/workoutPlaylist_controller.dart';
+import 'package:fitness/model/excersise.dart';
 import 'package:fitness/model/tool.dart';
 import 'package:fitness/model/workout_playlist_model.dart';
+import 'package:fitness/service/excercise_playlist.dart';
 import 'package:fitness/service/tool_playlist.dart';
 import 'package:fitness/view/meal_planner/meal_planner_view.dart';
 import 'package:fitness/view/workout_tracker/add_schedule_view.dart';
@@ -28,6 +30,7 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
   int displayedItemCount = 2;
   int listlength = 0;
   int listFeaturedLength = 0;
+  List<Map<String, String>> exerciseArr = [];
 
   @override
   Widget build(BuildContext context) {

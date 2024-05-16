@@ -28,6 +28,8 @@ class SetPlaylistService extends GetxController {
     try {
       final docSnapshot = await _db.collection('setExercise').doc(id).get();
       if (docSnapshot.exists) {
+        print(id);
+        print("doneeee");
         return SetExercisetModel.fromSnapshot(docSnapshot);
       } else {
         throw 'No document found with the given id';
@@ -40,19 +42,21 @@ class SetPlaylistService extends GetxController {
   Future<List<SetExercisetModel>> getSetPlayListByWorkOutPlayListId(
       String playListId) async {
     try {
-      print(2);
+      print("buoc 1000");
 
       WorkoutPlaylistModel workoutPlayList =
           await WorkoutPlaylistService.to.getWorkoutPlaylistById(playListId);
+
       print(workoutPlayList.listSetId.length);
       List<SetExercisetModel> listSetExercise = [];
       for (String setId in workoutPlayList.listSetId) {
         SetExercisetModel set = await getSetPlaylistById(setId);
         listSetExercise.add(set);
       }
+      print(listSetExercise);
       return listSetExercise;
     } catch (e) {
-      throw 'Something went wrong. Please try again';
+      throw 'CIU BE';
     }
   }
 }

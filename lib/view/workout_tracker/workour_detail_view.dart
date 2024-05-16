@@ -1,4 +1,5 @@
 // TODO Implement this library.import 'package:fitness/common/colo_extension.dart';
+import 'package:fitness/common_widget/exercises_row.dart';
 import 'package:fitness/common_widget/icon_title_next_row.dart';
 import 'package:fitness/common_widget/round_button.dart';
 import 'package:fitness/model/excersise.dart';
@@ -33,7 +34,7 @@ class _WorkoutDetailViewState extends State<WorkoutDetailView> {
   }
 
   List<Map<String, String>> youArr = [];
-  List<Map<String, String>> setArr = [];
+  List<Map<String, String>> exerciseArr = [];
   int count = 0;
   test(String id) async {
     ToolService toolService = ToolService();
@@ -61,17 +62,17 @@ class _WorkoutDetailViewState extends State<WorkoutDetailView> {
         .toList();
   } */
 
-  Future<List<SetExercisetModel>> fetchSetPlaylist(String id) async {
-    SetPlaylistService setPlaylistService = SetPlaylistService();
-    List<SetExercisetModel> listSet =
-        await setPlaylistService.getSetPlayListByWorkOutPlayListId(id);
-    setArr = listSet
-        .map((set) => {
-              "title": set.name,
+  Future<List<ExerciselModel>> fetchExercise(String id) async {
+    ExerciseService exerciseService = ExerciseService();
+    List<ExerciselModel> listExercise =
+        await exerciseService.getExercisePlayListByWorkOutPlayListId(id);
+    exerciseArr = listExercise
+        .map((exercise) => {
+              "image": exercise.image,
+              "title": exercise.title,
             })
         .toList();
-    return listSet;
-    // Add this line to return the list of exercises
+    return listExercise;
   }
 
   @override
@@ -344,9 +345,9 @@ class _WorkoutDetailViewState extends State<WorkoutDetailView> {
                         ],
                       ),
                       FutureBuilder(
-                        future: fetchSetPlaylist(widget.id),
+                        future: fetchExercise(widget.id),
                         builder: (context,
-                            AsyncSnapshot<List<SetExercisetModel>> snapshot) {
+                            AsyncSnapshot<List<ExerciselModel>> snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
                             return Center(child: CircularProgressIndicator());
@@ -357,12 +358,23 @@ class _WorkoutDetailViewState extends State<WorkoutDetailView> {
                               padding: EdgeInsets.zero,
                               physics: const NeverScrollableScrollPhysics(),
                               shrinkWrap: true,
-                              itemCount: 3,
+                              itemCount: exerciseArr.length,
                               itemBuilder: (context, index) {
-                                final setPlaylist = snapshot.data?[index];
-                                return ExercisesSetSection(
-                                  setItem: setPlaylist as SetExercisetModel,
-                                  onPressed: (obj) {
+                                final exercise = snapshot.data?[index];
+                                return ExercisesRow(
+                                  exerciselItem: exercise as ExerciselModel,
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            ExercisesStepDetails(
+                                                exerciselItem: exercise),
+                                      ),
+                                    );
+                                  },
+
+                                  /*   onPressed: (obj) {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -372,7 +384,7 @@ class _WorkoutDetailViewState extends State<WorkoutDetailView> {
                                         ),
                                       ),
                                     );
-                                  },
+                                  }, */
                                 );
                               },
                             );
@@ -385,7 +397,7 @@ class _WorkoutDetailViewState extends State<WorkoutDetailView> {
                     ],
                   ),
                 ),
-                SafeArea(
+                /*  SafeArea(
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -393,7 +405,7 @@ class _WorkoutDetailViewState extends State<WorkoutDetailView> {
                       RoundButton(title: "Start Workout", onPressed: () {})
                     ],
                   ),
-                )
+                ) */
               ],
             ),
           ),

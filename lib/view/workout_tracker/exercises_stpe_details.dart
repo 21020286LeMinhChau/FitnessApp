@@ -1,14 +1,18 @@
 import 'package:fitness/common/color_extension.dart';
+import 'package:fitness/model/excersise.dart';
+import 'package:fitness/view/workout_tracker/video.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:readmore/readmore.dart';
 
 import '../../common_widget/round_button.dart';
 import '../../common_widget/step_detail_row.dart';
+import 'package:video_player/video_player.dart';
 
 class ExercisesStepDetails extends StatefulWidget {
-  final Map eObj;
-  const ExercisesStepDetails({super.key, required this.eObj});
+  final ExerciselModel exerciselItem;
+
+  const ExercisesStepDetails({required this.exerciselItem});
 
   @override
   State<ExercisesStepDetails> createState() => _ExercisesStepDetailsState();
@@ -122,7 +126,15 @@ class _ExercisesStepDetailsState extends State<ExercisesStepDetails> {
                         borderRadius: BorderRadius.circular(20)),
                   ),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => VideoApp(
+                                    videoUrl:
+                                        "https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4",
+                                  )));
+                    },
                     icon: Image.asset(
                       "assets/img/Play.png",
                       width: 30,
@@ -135,7 +147,7 @@ class _ExercisesStepDetailsState extends State<ExercisesStepDetails> {
                 height: 15,
               ),
               Text(
-                widget.eObj["title"].toString(),
+                widget.exerciselItem.title,
                 style: TextStyle(
                     color: TColor.black,
                     fontSize: 16,
@@ -229,7 +241,8 @@ class _ExercisesStepDetailsState extends State<ExercisesStepDetails> {
                     height: 40,
                     decoration: BoxDecoration(
                       border: Border(
-                        top: BorderSide(color: TColor.gray.withOpacity(0.2), width: 1),
+                        top: BorderSide(
+                            color: TColor.gray.withOpacity(0.2), width: 1),
                         bottom: BorderSide(
                             color: TColor.gray.withOpacity(0.2), width: 1),
                       ),
