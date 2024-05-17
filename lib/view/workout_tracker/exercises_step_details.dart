@@ -1,6 +1,6 @@
 import 'package:fitness/common/color_extension.dart';
 import 'package:fitness/model/excersise.dart';
-import 'package:fitness/view/workout_tracker/video.dart';
+import 'package:fitness/view/workout_tracker/video_player_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:readmore/readmore.dart';
@@ -130,10 +130,7 @@ class _ExercisesStepDetailsState extends State<ExercisesStepDetails> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => VideoApp(
-                                    videoUrl:
-                                        "https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4",
-                                  )));
+                              builder: (context) => VideoPlayerPage()));
                     },
                     icon: Image.asset(
                       "assets/img/Play.png",
@@ -157,7 +154,7 @@ class _ExercisesStepDetailsState extends State<ExercisesStepDetails> {
                 height: 4,
               ),
               Text(
-                "Easy | 390 Calories Burn",
+                "Easy | ${widget.exerciselItem.calories} Calories Burn",
                 style: TextStyle(
                   color: TColor.gray,
                   fontSize: 12,
@@ -177,7 +174,7 @@ class _ExercisesStepDetailsState extends State<ExercisesStepDetails> {
                 height: 4,
               ),
               ReadMoreText(
-                'A jumping jack, also known as a star jump and called a side-straddle hop in the US military, is a physical jumping exercise performed by jumping to a position with the legs spread wide A jumping jack, also known as a star jump and called a side-straddle hop in the US military, is a physical jumping exercise performed by jumping to a position with the legs spread wide',
+                widget.exerciselItem.description,
                 trimLines: 4,
                 colorClickableText: TColor.black,
                 trimMode: TrimMode.Line,

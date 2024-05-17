@@ -8,6 +8,7 @@
 .buildlog/
 .history
 .svn/
+=
 migrate_working_dir/
 
 # IntelliJ related
@@ -44,3 +45,6 @@ app.*.map.json
 .env
 
 /linux
+# macOS Pods
+**/macos/Pods/
+**/macos/Flutter/

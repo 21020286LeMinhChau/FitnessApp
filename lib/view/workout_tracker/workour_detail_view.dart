@@ -8,7 +8,7 @@ import 'package:fitness/model/tool.dart';
 import 'package:fitness/model/workout_playlist_model.dart';
 import 'package:fitness/service/excercise_playlist.dart';
 import 'package:fitness/service/setExercise_playlist.dart';
-import 'package:fitness/view/workout_tracker/exercises_stpe_details.dart';
+import 'package:fitness/view/workout_tracker/exercises_step_details.dart';
 import 'package:fitness/view/workout_tracker/workout_schedule_view.dart';
 import 'package:flutter/material.dart';
 import '../../common/color_extension.dart';
@@ -297,8 +297,8 @@ class _WorkoutDetailViewState extends State<WorkoutDetailView> {
                                           alignment: Alignment.center,
                                           child: Image.asset(
                                             yObj["image"].toString(),
-                                            width: media.width * 0.8,
-                                            height: media.width * 0.8,
+                                            width: media.width * 0.9,
+                                            height: media.width * 0.9,
                                             fit: BoxFit.cover,
                                           ),
                                         ),
@@ -322,7 +322,7 @@ class _WorkoutDetailViewState extends State<WorkoutDetailView> {
                         ),
                       ),
                       SizedBox(
-                        height: media.width * 0.05,
+                        height: media.width * 0.06,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -334,14 +334,6 @@ class _WorkoutDetailViewState extends State<WorkoutDetailView> {
                                 fontSize: 16,
                                 fontWeight: FontWeight.w700),
                           ),
-                          TextButton(
-                            onPressed: () {},
-                            child: Text(
-                              "${youArr.length} Sets",
-                              style:
-                                  TextStyle(color: TColor.gray, fontSize: 12),
-                            ),
-                          )
                         ],
                       ),
                       FutureBuilder(
