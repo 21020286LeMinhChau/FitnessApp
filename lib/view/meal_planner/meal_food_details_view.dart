@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fitness/common_widget/meal_recommend_cell.dart';
 import 'package:fitness/view/meal_planner/food_info_details_view.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,18 @@ class MealFoodDetailsView extends StatefulWidget {
 
 class _MealFoodDetailsViewState extends State<MealFoodDetailsView> {
   TextEditingController txtSearch = TextEditingController();
+
+  Future <List<dynamic>> getFoodByCategory(String category) async {
+    try {
+      var mealCreate = await FirebaseFirestore.instance
+          .collection('Meal')
+          .where('category', isEqualTo: category)
+          .get();
+      return mealCreate.docs.map((e) => e.data()).toList();
+    } catch (e) {
+      return [];
+    }
+  }
 
   List popularArr = [
     {
