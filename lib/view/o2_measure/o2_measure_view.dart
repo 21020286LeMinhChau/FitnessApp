@@ -16,7 +16,7 @@ class O2MeasureView extends StatefulWidget {
 class _O2MeasureViewState extends State<O2MeasureView> {
   List<SensorValue> data = [];
   List<SensorValue> bpmValues = [];
-
+  List<int> spO2Values = [];
   Timer? _timer; // Declare a Timer variable
   int remainingTime = 15;
 
@@ -47,11 +47,20 @@ class _O2MeasureViewState extends State<O2MeasureView> {
       final latestValue = bpmValues.last.value;
       setBloodPressure(latestValue.toInt());
     }
+
+    if (spO2Values.isNotEmpty) {
+      final latestValue = spO2Values.last;
+      setSpO2(latestValue);
+    }
+
     setState(() {});
   }
 
   int systolicPressure = 0;
   int diastolicPressure = 0;
+
+  int spO2 = 0;
+
   void setBloodPressure(int heartRate,
       {int age = 18,
       String sex = 'male',
@@ -81,6 +90,10 @@ class _O2MeasureViewState extends State<O2MeasureView> {
     // You need to implement the saveSharedPreference function
     // saveSharedPreference("systolicPressure", systolicPressure);
     // saveSharedPreference("diastolicPressure", diastolicPressure);
+  }
+
+  void setSpO2(int spO2) {
+    this.spO2 = spO2;
   }
 
   @override
@@ -167,9 +180,17 @@ class _O2MeasureViewState extends State<O2MeasureView> {
                       bpmValues.add(SensorValue(
                           value: value.toDouble(), time: DateTime.now()));
                     },
+                    //  set spO2
                   ),
+                  onSpO2Measured: (value) {
+                    // Do something with the measured SpO2 value
+                    // setSpO2(value);
+                    if (spO2Values.length >= 100) spO2Values.removeAt(0);
+                    spO2Values.add(value);
+                  },
                 )
               : const SizedBox(),
+
           isBloodPressureMeasure && bpmValues.isNotEmpty
               ? () {
                   final latestValue = bpmValues.last.value;
@@ -201,19 +222,33 @@ class _O2MeasureViewState extends State<O2MeasureView> {
               : const SizedBox(),
 
           // Display systolicPressure and diastolicPressure
-          if (!isBloodPressureMeasure && systolicPressure != 0)
+          // if (!isBloodPressureMeasure && systolicPressure != 0)
+          //   Column(
+          //     children: [
+          //       Text(
+          //         "Systolic Pressure: $systolicPressure",
+          //         style: const TextStyle(
+          //           color: Colors.black,
+          //           fontSize: 20,
+          //           fontWeight: FontWeight.bold,
+          //         ),
+          //       ),
+          //       Text(
+          //         "Diastolic Pressure: $diastolicPressure",
+          //         style: const TextStyle(
+          //           color: Colors.black,
+          //           fontSize: 20,
+          //           fontWeight: FontWeight.bold,
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+
+          if (spO2 != 0)
             Column(
               children: [
                 Text(
-                  "Systolic Pressure: $systolicPressure",
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  "Diastolic Pressure: $diastolicPressure",
+                  "SpO2: $spO2",
                   style: const TextStyle(
                     color: Colors.black,
                     fontSize: 20,
@@ -222,6 +257,7 @@ class _O2MeasureViewState extends State<O2MeasureView> {
                 ),
               ],
             ),
+
           Expanded(
             child: Container(), // Để "đẩy" nút xuống cuối
           ),

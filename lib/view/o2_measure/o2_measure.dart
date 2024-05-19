@@ -2,7 +2,6 @@ import 'dart:math';
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fftea/fftea.dart';
 
 /// Class to store one sample data point
 class SensorValue {
@@ -43,6 +42,8 @@ class O2MeasureDialog extends StatefulWidget {
   ///
   /// Should be non-blocking as it can affect
   final void Function(int) onBPM;
+
+  final Function(int) onSpO2Measured;
 
   /// Callback used to notify the caller of updated raw data sample
   ///
@@ -96,6 +97,7 @@ class O2MeasureDialog extends StatefulWidget {
     this.cameraWidgetWidth,
     this.showTextValues,
     this.borderRadius,
+    required this.onSpO2Measured,
   });
 
   /// Set the smoothing factor for exponential averaging
@@ -211,13 +213,13 @@ class _BpO2View extends State<O2MeasureDialog> {
                   ),
                 ),
                 //A developer has to choose whether they want to show this Text widget. (Implemented by Karl Mathuthu)
-                if (widget.showTextValues == true) ...{
-                  const Text(
-                    // "BPM: ${currentValue.toStringAsFixed(0)}",
-                    "SpO2: 98%",
-                  )
-                } else
-                  const SizedBox(),
+                // if (widget.showTextValues == true) ...{
+                //   const Text(
+                //     // "BPM: ${currentValue.toStringAsFixed(0)}",
+                //     "SpO2: 98%",
+                //   )
+                // } else
+                //   const SizedBox(),
                 widget.child == null ? const SizedBox() : widget.child!,
               ],
             )
@@ -312,6 +314,8 @@ class _BpO2View extends State<O2MeasureDialog> {
     if (_o2 != 0) {
       // Handle successful measurement
       widget.onBPM(_o2);
+
+      widget.onSpO2Measured(_o2);
     }
 
     Future<void>.delayed(Duration(milliseconds: widget.sampleDelay))
@@ -326,6 +330,7 @@ class _BpO2View extends State<O2MeasureDialog> {
 
   double _calculateRedAvg(CameraImage img) {
     //  use yuv420
+
     // final int width = img.width;
     // final int height = img.height;
     // print(width.toString() + " : " + height.toString());
@@ -345,7 +350,6 @@ class _BpO2View extends State<O2MeasureDialog> {
     // }
     // print(redAvg / (width * height));
     // return redAvg / (width * height);
-    //  return random from 200 -> 255
     return Random().nextInt(56) + 200.0;
   }
 

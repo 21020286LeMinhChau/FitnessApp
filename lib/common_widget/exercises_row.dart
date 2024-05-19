@@ -1,10 +1,12 @@
 import 'package:fitness/common/color_extension.dart';
 import 'package:flutter/material.dart';
 
+import '../model/excersise.dart';
+
 class ExercisesRow extends StatelessWidget {
-  final Map eObj;
+  final ExerciselModel exerciselItem;
   final VoidCallback onPressed;
-  const ExercisesRow({super.key, required this.eObj, required this.onPressed});
+  const ExercisesRow({required this.onPressed, required this.exerciselItem});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +17,7 @@ class ExercisesRow extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(5),
             child: Image.asset(
-              eObj["image"].toString(),
+              exerciselItem.image.toString(),
               width: 60,
               height: 60,
               fit: BoxFit.cover,
@@ -29,15 +31,11 @@ class ExercisesRow extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                eObj["title"].toString(),
-                style: TextStyle(color: TColor.black, fontSize: 14, fontWeight: FontWeight.w500),
-              ),
-              Text(
-                eObj["value"].toString(),
+                exerciselItem.title,
                 style: TextStyle(
-                  color: TColor.gray,
-                  fontSize: 12,
-                ),
+                    color: TColor.black,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500),
               ),
             ],
           )),

@@ -1,6 +1,10 @@
 import 'package:fitness/common/color_extension.dart';
 import 'package:fitness/controller/workoutPlaylist_controller.dart';
+import 'package:fitness/model/excersise.dart';
+import 'package:fitness/model/tool.dart';
 import 'package:fitness/model/workout_playlist_model.dart';
+import 'package:fitness/service/excercise_playlist.dart';
+import 'package:fitness/service/tool_playlist.dart';
 import 'package:fitness/view/meal_planner/meal_planner_view.dart';
 import 'package:fitness/view/workout_tracker/add_schedule_view.dart';
 import 'package:fitness/view/workout_tracker/workour_detail_view.dart';
@@ -26,44 +30,7 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
   int displayedItemCount = 2;
   int listlength = 0;
   int listFeaturedLength = 0;
-  List latestArr = [
-    {
-      "image": "assets/img/Workout1.png",
-      "title": "Fullbody Workout",
-      "time": "Today, 03:00pm"
-    },
-    {
-      "image": "assets/img/Workout2.png",
-      "title": "Upperbody Workout",
-      "time": "June 05, 02:00pm"
-    },
-    {
-      "image": "assets/img/Workout2.png",
-      "title": "Upperbody Workout",
-      "time": "June 05, 02:00pm"
-    },
-  ];
-
-  List whatArr = [
-    {
-      "image": "assets/img/what_1.png",
-      "title": "Fullbody Workout",
-      "exercises": "11 Exercises",
-      "time": "32mins"
-    },
-    {
-      "image": "assets/img/what_2.png",
-      "title": "Lowebody Workout",
-      "exercises": "12 Exercises",
-      "time": "40mins"
-    },
-    {
-      "image": "assets/img/what_3.png",
-      "title": "AB Workout",
-      "exercises": "14 Exercises",
-      "time": "20mins"
-    }
-  ];
+  List<Map<String, String>> exerciseArr = [];
 
   @override
   Widget build(BuildContext context) {
@@ -339,6 +306,7 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
                                 ? listFeaturedLength
                                 : 2;
                           });
+                          /*   test(); */
                         },
                         child: Text(
                           displayedItemCount == 2 ? "See More" : "See Less",
@@ -403,15 +371,20 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
                           itemCount: listlength,
                           itemBuilder: (_, index) {
                             final playlist = snapshot.data?[index];
-                            print(workoutPlaylistController.isLoading.value);
+/*                             print(workoutPlaylistController.isLoading.value);
+ */
                             return InkWell(
                                 onTap: () {
-                                /*   Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
                                       builder: (context) => WorkoutDetailView(
-                                          dObj: wObj,
-                                          ))); */
+                                        workoutDetailItemView:
+                                            playlist as WorkoutPlaylistModel,
+                                        id: playlist.id,
+                                      ),
+                                    ),
+                                  );
                                 },
                                 child: WhatTrainRow(
                                   workoutPlaylistItem:
@@ -422,24 +395,6 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
                       }
                     },
                   ),
-                  /*  ListView.builder(
-                      padding: EdgeInsets.zero,
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: whatArr.length,
-                      itemBuilder: (context, index) {
-                        var wObj = whatArr[index] as Map? ?? {};
-                        return InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => WorkoutDetailView(
-                                            dObj: wObj,
-                                          )));
-                            },
-                            child: WhatTrainRow(wObj: wObj));
-                      }), */
                   SizedBox(
                     height: media.width * 0.1,
                   ),
