@@ -1,5 +1,4 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:fitness/view/home/home_view.dart';
 import 'package:fitness/view/login/login_view.dart';
 import 'package:fitness/view/main_tab/main_tab_view.dart';
 import 'package:fitness/view/on_boarding/started_view.dart';

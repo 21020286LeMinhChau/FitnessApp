@@ -1,4 +1,4 @@
-class Entry {
+class RunningProperty {
   static String table = "entries";
 
   int id;
@@ -7,7 +7,7 @@ class Entry {
   double speed;
   double distance;
 
-  Entry(
+  RunningProperty(
       {required this.id,
       required this.date,
       required this.duration,
@@ -27,8 +27,8 @@ class Entry {
     return map;
   }
 
-  static Entry fromMap(Map<String, dynamic> map) {
-    return Entry(
+  static RunningProperty fromMap(Map<String, dynamic> map) {
+    return RunningProperty(
         id: map['id'],
         date: map['date'],
         duration: map['duration'],

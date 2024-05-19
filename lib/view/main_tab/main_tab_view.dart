@@ -8,8 +8,8 @@ import 'package:fitness/view/home/home_view.dart';
 import 'package:fitness/view/main_tab/select_view.dart';
 import 'package:fitness/view/photo_progress/photo_progress_view.dart';
 import 'package:fitness/view/profile/profile_view.dart';
+import 'package:fitness/view/running/home_running.dart';
 import 'package:flutter/material.dart';
-import 'package:fitness/view/running/map_view.dart';
 
 class MainTabView extends StatefulWidget {
   const MainTabView({super.key});
@@ -122,7 +122,6 @@ class _MainTabViewState extends State<MainTabView> {
                 isActive: selectTab == TabView.photoProgressView,
                 onTap: () {
                   selectTab = TabView.photoProgressView;
-                  // currentTab = PhotoProgressView();\
                   currentTab = PhotoProgressView();
                   if (mounted) {
                     setState(() {});
@@ -136,8 +135,7 @@ class _MainTabViewState extends State<MainTabView> {
                 isActive: selectTab == TabView.mapView,
                 onTap: () {
                   selectTab = TabView.mapView;
-                  // currentTab = PhotoProgressView();\
-                  currentTab = MapView();
+                  currentTab = HomeRunning();
                   if (mounted) {
                     setState(() {});
                   }
