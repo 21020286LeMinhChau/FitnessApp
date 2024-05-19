@@ -99,23 +99,6 @@ class _MainTabViewState extends State<MainTabView> {
                   }
                 },
               ),
-              // TabButton(
-              //   // icon: "assets/img/camera_tab.png",
-              //   icon: "assets/img/run_tab.png",
-              //   selectIcon: "assets/img/run_tab.png",
-              //   isActive: selectTab == TabView.mapView,
-              //   onTap: () {
-              //     // selectTab = TabView.mapView;
-              //     // // currentTab = PhotoProgressView();\
-              //     // currentTab = MapView();
-              //     // if (mounted) {
-              //     //   setState(() {});
-              //     // }
-              //   },
-              // ),
-              // SizedBox(
-              //   width: 40,
-              // ),
               TabButton(
                 icon: "assets/img/camera_tab.png",
                 selectIcon: "assets/img/camera_tab_select.png",
