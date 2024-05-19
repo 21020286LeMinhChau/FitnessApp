@@ -3,11 +3,15 @@ import 'package:fitness/common_widget/food_step_detail_row.dart';
 // import 'package:fitness/common_widget/icon_title_next_row.dart';
 import 'package:fitness/common_widget/ingredient_next_row.dart';
 import 'package:fitness/common_widget/round_button.dart';
+import 'package:fitness/model/food.dart';
+import 'package:fitness/view/home/activity_tracker_view.dart';
 import 'package:fitness/view/meal_planner/meal_schedule_view.dart';
 // import 'package:fitness/view/workout_tracker/exercises_stpe_details.dart';
 // import 'package:fitness/view/workout_tracker/workout_schedule_view.dart';
 import 'package:flutter/material.dart';
 import 'package:readmore/readmore.dart';
+import 'package:fitness/service/foodStuff.dart';
+
 
 class FoodInfoDetailView extends StatefulWidget {
   final Map mObj;
@@ -56,6 +60,11 @@ class _FoodInfoDetailViewState extends State<FoodInfoDetailView> {
     },
     {"no": "5", "detail": "Prepare all of the ingredients that needed"},
   ];
+  NutritionStuff foodStuff = NutritionStuff();
+  void test() async {
+    var testh = await foodStuff.getNutritionByFoodId("fgr3PRO4pUl0XFDFC76H");
+    print(testh);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -193,7 +202,9 @@ class _FoodInfoDetailViewState extends State<FoodInfoDetailView> {
                             ),
                           ),
                           TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              test();
+                            },
                             child: Image.asset(
                               "assets/img/fav.png",
                               width: 15,

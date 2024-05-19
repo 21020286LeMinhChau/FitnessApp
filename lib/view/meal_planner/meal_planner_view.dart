@@ -1,5 +1,9 @@
 import 'package:fitness/common/color_extension.dart';
+import 'package:fitness/model/food.dart';
+import 'package:fitness/model/mealSchedule.dart';
+import 'package:fitness/service/meal.dart';
 import 'package:fitness/view/meal_planner/meal_food_details_view.dart';
+import 'package:fitness/view/meal_planner/meal_schedule_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -7,8 +11,8 @@ import 'package:fitness/common_widget/round_button.dart';
 import 'package:fitness/common_widget/today_meal_row.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fitness/common_widget/find_sth_eat.dart';
-
-
+import 'package:fitness/service/foodStuff.dart';
+import 'package:intl/intl.dart';
 class MealPlannerView extends StatefulWidget {
   const MealPlannerView({super.key});
 
@@ -17,18 +21,39 @@ class MealPlannerView extends StatefulWidget {
 }
 
 class _MealPlannerViewState extends State<MealPlannerView> {
-  List todatMealArr = [
-    {
-      "name": "Salmon Nigiri",
-      "image": "assets/img/Salmon.png",
-      "time": "26/03/2024 08:00 AM"
-    },
-    {
-      "name": "Lowfat Milk",
-      "image": "assets/img/Milk.png",
-      "time": "26/03/2024 10:00 AM"
+  MealStuff mealStuff = MealStuff();
+  FoodStuff foodStuff = FoodStuff();
+  String category = "Breakfast";
+  Future<List<dynamic>> getListTodayMeals(String category) async {
+    // Fetch the meals
+    var meals = await mealStuff.getMealByCategoryDay(category, DateTime.now());
+    List food_list = [];
+    for(var food in meals[0]["food"]){
+      var foodObj = await foodStuff.getFoodById(food);
+      var date = meals[0]["date"];
+      food_list.add([foodObj['data']['name'],foodObj['data']['image'] , date]);
     }
-  ];
+    print(food_list); 
+    return food_list;
+  }
+  void updateCategory(String newCategory) {
+    setState(() {
+      category = newCategory;
+    });
+  }
+
+  // List todayMealArr = [
+  //   {
+  //     "name": "Salmon Nigiri",
+  //     "image": "assets/img/Salmon.png",
+  //     "time": "26/03/2024 08:00 AM"
+  //   },
+  //   {
+  //     "name": "Lowfat Milk",
+  //     "image": "assets/img/Milk.png",
+  //     "time": "26/03/2024 10:00 AM"
+  //   }
+  // ];
   List findEatArr = [
     {
       "name": "Breakfast",
@@ -288,13 +313,14 @@ class _MealPlannerViewState extends State<MealPlannerView> {
                               fontSize: 12,
                               fontWeight: FontWeight.w400,
                               onPressed: () {
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (context) =>
-                                //         const MealFoodDetailsView(),
-                                //   ),
-                                // );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const MealScheduleView()
+                                  ),
+                                );
+                                
                               },
                             ),
                           )
@@ -323,9 +349,10 @@ class _MealPlannerViewState extends State<MealPlannerView> {
                                 15), // Removed 'const' here
                           ),
                           child: DropdownButtonHideUnderline(
-                            child: DropdownButton(
+                            child: DropdownButton<String>(
+                              // value: category,
                               items: ["Breakfast", "Lunch", "Dinner"]
-                                  .map((name) => DropdownMenuItem(
+                                  .map((name) => DropdownMenuItem<String>(
                                         value: name,
                                         child: Text(
                                           name,
@@ -334,34 +361,58 @@ class _MealPlannerViewState extends State<MealPlannerView> {
                                         ),
                                       ))
                                   .toList(),
-                              onChanged: (value) {},
-                              icon:
-                                  Icon(Icons.expand_more, color: TColor.white),
+                              onChanged: (String? value) {
+                                if (value != null) {
+                                  updateCategory(value);
+                                  print(value);
+                                }
+                              },
+                              icon: Icon(Icons.expand_more, color: TColor.white),
                               hint: Text(
-                                "Breakfast",
+                                category,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     color: TColor.white, fontSize: 12),
-                              ),
+
                             ),
                           ),
+                        )
                         )
                       ],
                     ),
                     SizedBox(
                       height: media.width * 0.05,
                     ),
-                    ListView.builder(
-                        padding: EdgeInsets.zero,
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: todatMealArr.length,
-                        itemBuilder: (context, index) {
-                          var mObj = todatMealArr[index] as Map? ?? {};
-                          return TodayMealRow(
-                            mObj: mObj,
+                    FutureBuilder<List>(
+                      future: getListTodayMeals(category),
+                      builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+                        if (snapshot.hasData) {
+                          return ListView.builder(
+                            padding: EdgeInsets.zero,
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (context, index) {
+                              DateTime dateTime = snapshot.data![index][2].toDate();
+                              String formattedDate = DateFormat('dd/MM/yyyy hh:mm a').format(dateTime);
+                              print(formattedDate);
+                              Map<String, dynamic> mObj = {
+                                'name': snapshot.data![index][0],
+                                'image': snapshot.data![index][1],
+                                'time': formattedDate,
+                              };
+                              return TodayMealRow(
+                                mObj: mObj,
+                              );
+                            },
                           );
-                        }),
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else {
+                          return const CircularProgressIndicator();
+                        }
+                      },
+                    ),
                     SizedBox(
                       height: media.width * 0.05,
                     ),
@@ -380,21 +431,21 @@ class _MealPlannerViewState extends State<MealPlannerView> {
                           itemBuilder: (context, index) {
                             var fObj = findEatArr[index] as Map? ?? {};
                             return InkWell(
-                              onTap: (){{
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        MealFoodDetailsView(eObj: fObj),
-                                  ),
-                                );
-                              
-                              }},
+                              onTap: () {
+                                {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          MealFoodDetailsView(eObj: fObj),
+                                    ),
+                                  );
+                                }
+                              },
                               child: FindSthToEat(
                                 fObj: fObj,
                               ),
                             );
-                            
                           }),
                     ),
                     SizedBox(
