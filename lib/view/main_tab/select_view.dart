@@ -2,6 +2,7 @@ import 'package:fitness/common/color_extension.dart';
 import 'package:fitness/view/blood_pressure/blood_pressure_view.dart';
 import 'package:fitness/view/heart_bpm/heart_bpm_view.dart';
 import 'package:fitness/view/meal_planner/meal_planner_view.dart';
+import 'package:fitness/view/o2_measure/o2_measure_view.dart';
 import 'package:fitness/view/sleep_tracker/sleep_tracker_view.dart';
 import 'package:fitness/view/workout_tracker/workout_tracker_view.dart';
 import 'package:flutter/material.dart';
@@ -14,111 +15,12 @@ class SelectView extends StatelessWidget {
     var media = MediaQuery.of(context).size;
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                border:
-                    Border.all(color: TColor.primaryColor1.withOpacity(0.5)),
-                boxShadow: [
-                  BoxShadow(
-                    color: TColor.primaryColor1.withOpacity(0.7),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: const Offset(0, 3), // changes position of shadow
-                  ),
-                ],
-              ),
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const HeartBpmView(),
-                    ),
-                  );
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Image.asset(
-                      'assets/img/sleep.png',
-                      width: 100,
-                      height: 100,
-                    ),
-                    SizedBox(
-                      width: media.width * 0.05,
-                    ),
-                    const Text(
-                      'Heart BPM Tracker',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                border:
-                    Border.all(color: TColor.primaryColor1.withOpacity(0.5)),
-                boxShadow: [
-                  BoxShadow(
-                    color: TColor.primaryColor1.withOpacity(0.7),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: const Offset(0, 3), // changes position of shadow
-                  ),
-                ],
-              ),
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const BloodPressureView(),
-                    ),
-                  );
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Image.asset(
-                      'assets/img/sleep.png',
-                      width: 100,
-                      height: 100,
-                    ),
-                    SizedBox(
-                      width: media.width * 0.05,
-                    ),
-                    const Text(
-                      'Blood Pressure Tracker',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
@@ -126,7 +28,7 @@ class SelectView extends StatelessWidget {
                       Border.all(color: TColor.primaryColor1.withOpacity(0.5)),
                   boxShadow: [
                     BoxShadow(
-                      color: TColor.primaryColor2.withOpacity(0.5),
+                      color: TColor.primaryColor1.withOpacity(0.7),
                       spreadRadius: 5,
                       blurRadius: 7,
                       offset: const Offset(0, 3), // changes position of shadow
@@ -138,7 +40,7 @@ class SelectView extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const WorkoutTrackerView(),
+                        builder: (context) => const HeartBpmView(),
                       ),
                     );
                   },
@@ -146,7 +48,7 @@ class SelectView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Image.asset(
-                        'assets/img/workout.webp',
+                        'assets/img/sleep.png',
                         width: 100,
                         height: 100,
                       ),
@@ -154,7 +56,7 @@ class SelectView extends StatelessWidget {
                         width: media.width * 0.05,
                       ),
                       const Text(
-                        'Workout Planner',
+                        'Heart BPM Tracker',
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 16,
@@ -163,11 +65,10 @@ class SelectView extends StatelessWidget {
                       ),
                     ],
                   ),
-                )),
-            const SizedBox(
-              height: 15,
-            ),
-            Container(
+                ),
+              ),
+              const SizedBox(height: 15),
+              Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
@@ -175,7 +76,7 @@ class SelectView extends StatelessWidget {
                       Border.all(color: TColor.primaryColor1.withOpacity(0.5)),
                   boxShadow: [
                     BoxShadow(
-                      color: TColor.primaryColor1.withOpacity(0.6),
+                      color: TColor.primaryColor1.withOpacity(0.7),
                       spreadRadius: 5,
                       blurRadius: 7,
                       offset: const Offset(0, 3), // changes position of shadow
@@ -187,7 +88,7 @@ class SelectView extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const MealPlannerView(),
+                        builder: (context) => const BloodPressureView(),
                       ),
                     );
                   },
@@ -195,7 +96,7 @@ class SelectView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Image.asset(
-                        'assets/img/meal.png',
+                        'assets/img/sleep.png',
                         width: 100,
                         height: 100,
                       ),
@@ -203,7 +104,7 @@ class SelectView extends StatelessWidget {
                         width: media.width * 0.05,
                       ),
                       const Text(
-                        'Meal Planner',
+                        'Blood Pressure Tracker',
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 16,
@@ -212,56 +113,202 @@ class SelectView extends StatelessWidget {
                       ),
                     ],
                   ),
-                )),
-            const SizedBox(height: 15),
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                border:
-                    Border.all(color: TColor.primaryColor1.withOpacity(0.5)),
-                boxShadow: [
-                  BoxShadow(
-                    color: TColor.primaryColor1.withOpacity(0.7),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: const Offset(0, 3), // changes position of shadow
-                  ),
-                ],
+                ),
               ),
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SleepTrackerView(),
-                    ),
-                  );
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Image.asset(
-                      'assets/img/sleep.png',
-                      width: 100,
-                      height: 100,
-                    ),
-                    SizedBox(
-                      width: media.width * 0.05,
-                    ),
-                    const Text(
-                      'Sleep Tracker',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
+              const SizedBox(height: 15),
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border:
+                      Border.all(color: TColor.primaryColor1.withOpacity(0.5)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: TColor.primaryColor1.withOpacity(0.7),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: const Offset(0, 3), // changes position of shadow
                     ),
                   ],
                 ),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const O2MeasureView(),
+                      ),
+                    );
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Image.asset(
+                        'assets/img/sleep.png',
+                        width: 100,
+                        height: 100,
+                      ),
+                      SizedBox(
+                        width: media.width * 0.05,
+                      ),
+                      const Text(
+                        'SpO2 Tracker',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ],
+              const SizedBox(height: 15),
+              Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                        color: TColor.primaryColor1.withOpacity(0.5)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: TColor.primaryColor2.withOpacity(0.5),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset:
+                            const Offset(0, 3), // changes position of shadow
+                      ),
+                    ],
+                  ),
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const WorkoutTrackerView(),
+                        ),
+                      );
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Image.asset(
+                          'assets/img/workout.webp',
+                          width: 100,
+                          height: 100,
+                        ),
+                        SizedBox(
+                          width: media.width * 0.05,
+                        ),
+                        const Text(
+                          'Workout Planner',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )),
+              const SizedBox(height: 15),
+              Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                        color: TColor.primaryColor1.withOpacity(0.5)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: TColor.primaryColor1.withOpacity(0.6),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset:
+                            const Offset(0, 3), // changes position of shadow
+                      ),
+                    ],
+                  ),
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MealPlannerView(),
+                        ),
+                      );
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Image.asset(
+                          'assets/img/meal.png',
+                          width: 100,
+                          height: 100,
+                        ),
+                        SizedBox(
+                          width: media.width * 0.05,
+                        ),
+                        const Text(
+                          'Meal Planner',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )),
+              const SizedBox(height: 15),
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border:
+                      Border.all(color: TColor.primaryColor1.withOpacity(0.5)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: TColor.primaryColor1.withOpacity(0.7),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: const Offset(0, 3), // changes position of shadow
+                    ),
+                  ],
+                ),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SleepTrackerView(),
+                      ),
+                    );
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Image.asset(
+                        'assets/img/sleep.png',
+                        width: 100,
+                        height: 100,
+                      ),
+                      SizedBox(
+                        width: media.width * 0.05,
+                      ),
+                      const Text(
+                        'Sleep Tracker',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -3,17 +3,17 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:fitness/common/color_extension.dart';
-import 'package:fitness/view/blood_pressure/blood_pressure.dart';
+import 'package:fitness/view/o2_measure/o2_measure.dart';
 import 'package:flutter/material.dart';
 
-class BloodPressureView extends StatefulWidget {
-  const BloodPressureView({super.key});
+class O2MeasureView extends StatefulWidget {
+  const O2MeasureView({super.key});
 
   @override
-  State<BloodPressureView> createState() => _BloodPressureViewState();
+  State<O2MeasureView> createState() => _O2MeasureViewState();
 }
 
-class _BloodPressureViewState extends State<BloodPressureView> {
+class _O2MeasureViewState extends State<O2MeasureView> {
   List<SensorValue> data = [];
   List<SensorValue> bpmValues = [];
 
@@ -120,7 +120,7 @@ class _BloodPressureViewState extends State<BloodPressureView> {
           ),
         ),
         title: Text(
-          "Blood Pressure Tracker",
+          "SpO2 Tracker",
           style: TextStyle(
               color: TColor.black, fontSize: 16, fontWeight: FontWeight.w700),
         ),
@@ -150,9 +150,9 @@ class _BloodPressureViewState extends State<BloodPressureView> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           isBloodPressureMeasure
-              ? dialog = BloodPressureDialog(
+              ? dialog = O2MeasureDialog(
                   context: context,
-                  showTextValues: false,
+                  showTextValues: true,
                   borderRadius: 10,
                   onRawData: (value) {
                     setState(() {
@@ -228,9 +228,9 @@ class _BloodPressureViewState extends State<BloodPressureView> {
           Center(
             child: ElevatedButton.icon(
               icon: const Icon(Icons.favorite_rounded),
-              label: Text(isBloodPressureMeasure
-                  ? "Stop measurement"
-                  : "Measure Blood Pressure"),
+              label: Text(
+                isBloodPressureMeasure ? "Stop measurement" : "Measure SpO2",
+              ),
               onPressed: () => setState(() {
                 if (isBloodPressureMeasure) {
                   _timer?.cancel();

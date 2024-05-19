@@ -67,6 +67,8 @@ dependencies:
 
   community_charts_flutter: ^1.0.2
   camera: ^0.10.5+9
+  fftea: ^1.5.0
+  image: ^4.1.7
 
 
 dependency_overrides:
