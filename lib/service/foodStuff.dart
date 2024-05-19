@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fitness/common/request_status.dart';
 import 'package:fitness/model/food.dart';
 class FoodStuff {
-
   Future getFoodByName(String name) async {
     try {
       var foodCreate = await FirebaseFirestore.instance
@@ -47,6 +46,7 @@ class FoodStuff {
       return RequestStatus.request500InternalServerError;
     }
   }
+
 }
 class NutritionStuff {
   Future getNutritionByFoodId(String foodId) async {
