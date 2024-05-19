@@ -101,7 +101,9 @@ class _AddScheduleViewState extends State<AddScheduleView> {
           SizedBox(
             height: media.width * 0.35,
             child: CupertinoDatePicker(
-              onDateTimeChanged: (newDate) {},
+              onDateTimeChanged: (newDate) {
+                
+              },
               initialDateTime: DateTime.now(),
               use24hFormat: false,
               minuteInterval: 1,
@@ -124,7 +126,9 @@ class _AddScheduleViewState extends State<AddScheduleView> {
               title: "Choose Workout",
               time: "Upperbody",
               color: TColor.lightGray,
-              onPressed: () {}),
+              onPressed: () {
+                
+              }),
           const SizedBox(
             height: 10,
           ),

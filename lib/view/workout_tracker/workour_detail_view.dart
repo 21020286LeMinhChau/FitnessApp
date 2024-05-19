@@ -9,6 +9,7 @@ import 'package:fitness/model/workout_playlist_model.dart';
 import 'package:fitness/service/excercise_playlist.dart';
 import 'package:fitness/service/setExercise_playlist.dart';
 import 'package:fitness/view/workout_tracker/exercises_step_details.dart';
+import 'package:fitness/view/workout_tracker/workoutSchedule.dart';
 import 'package:fitness/view/workout_tracker/workout_schedule_view.dart';
 import 'package:flutter/material.dart';
 import '../../common/color_extension.dart';
@@ -222,7 +223,7 @@ class _WorkoutDetailViewState extends State<WorkoutDetailView> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        const WorkoutScheduleView()));
+                                        const WorkoutSchedule()));
                           }),
                       SizedBox(
                         height: media.width * 0.02,
