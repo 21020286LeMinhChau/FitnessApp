@@ -3,11 +3,15 @@ import 'package:fitness/view/login/login_view.dart';
 import 'package:fitness/view/main_tab/main_tab_view.dart';
 import 'package:fitness/view/on_boarding/started_view.dart';
 import 'package:flutter/material.dart';
+// import 'package:flutter_background/flutter_background.dart';
 import 'package:flutter_config/flutter_config.dart';
+// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'common/color_extension.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tuple/tuple.dart';
 
+// final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+//     FlutterLocalNotificationsPlugin();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Required by FlutterConfig
 
@@ -25,6 +29,29 @@ void main() async {
   }
 
   await FlutterConfig.loadEnvVariables();
+  // const AndroidInitializationSettings initializationSettingsAndroid =
+  //     AndroidInitializationSettings(
+  //         'app_icon'); // Ensure you have an app icon in the drawable folder
+
+  // const InitializationSettings initializationSettings =
+  //     InitializationSettings(android: initializationSettingsAndroid);
+
+  // await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+  // Initialize background execution
+  // const androidConfig = FlutterBackgroundAndroidConfig(
+  //   notificationTitle: 'Fitness Tracker',
+  //   notificationText: 'Your location is being tracked',
+  //   notificationImportance:
+  //       FlutterBackgroundAndroidNotificationImportance.Default,
+  //   notificationIcon: FlutterBackgroundAndroidResource(
+  //       name: 'background_icon',
+  //       defType:
+  //           'drawable'), // Ensure you have a background_icon in the drawable folder
+  // );
+
+  // await FlutterBackground.initialize(androidConfig: androidConfig);
+  // await FlutterBackground.enableBackgroundExecution();
 
   runApp(MyApp());
 }
@@ -32,24 +59,6 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // Future<void> checkFirstSeen() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   bool _seen = (prefs.getBool('seen') ?? false);
-
-  //   if (_seen) {
-  //     // Navigator.of(context).pushReplacement(
-  //     //     new MaterialPageRoute(builder: (context) => new SignUpView()));
-  //   } else {
-  //     await prefs.setBool('seen', true);
-  //     // Navigator.of(context).pushReplacement(
-  //     //     new MaterialPageRoute(builder: (context) => new WelcomeView()));
-  //   }
-  // }
-
-  // Future<String?> getUserId() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   return prefs.getString('user_id');
-  // }
   Future<Tuple2<bool, String?>> checkFirstSeenAndGetUserId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool _seen = (prefs.getBool('seen') ?? false);

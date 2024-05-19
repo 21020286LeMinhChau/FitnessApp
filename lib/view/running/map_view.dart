@@ -9,6 +9,9 @@ import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 // import 'package:fitness/model/entry.dart';
+import 'package:flutter_background/flutter_background.dart'
+    as FlutterBackground;
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class MapView extends StatefulWidget {
   // const MapView({super.key});
@@ -18,6 +21,34 @@ class MapView extends StatefulWidget {
 }
 
 class _MapViewState extends State<MapView> {
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+  Future<void> showNotification(String title, String body) async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails(
+      'your_channel_id',
+      'your_channel_name',
+      channelDescription: 'your_channel_description',
+      importance: Importance.max,
+      priority: Priority.high,
+      showWhen: false,
+    );
+    const NotificationDetails platformChannelSpecifics = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+    );
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      title,
+      body,
+      platformChannelSpecifics,
+    );
+  }
+
+  void updateNotification(String title, String body) {
+    showNotification(title, body);
+  }
+
   final Set<Polyline> polyline = {};
   final Location _location = Location();
   late GoogleMapController _mapController;
@@ -37,6 +68,7 @@ class _MapViewState extends State<MapView> {
   @override
   void initState() {
     super.initState();
+    initBackgroundService();
     _stopWatchTimer.onStartTimer();
   }
 
@@ -45,6 +77,21 @@ class _MapViewState extends State<MapView> {
     super.dispose();
     _isDisposed = true;
     await _stopWatchTimer.dispose(); // Need to call dispose function.
+  }
+
+  Future<void> initBackgroundService() async {
+    const androidConfig = FlutterBackground.FlutterBackgroundAndroidConfig(
+      notificationTitle: 'Fitness Tracker',
+      notificationText: 'Your location is being tracked',
+      notificationImportance:
+          FlutterBackground.AndroidNotificationImportance.Default,
+      notificationIcon: FlutterBackground.AndroidResource(
+          name: 'background_icon',
+          defType: 'drawable'), // Tạo một biểu tượng nhỏ trong drawable
+    );
+    await FlutterBackground.FlutterBackground.initialize(
+        androidConfig: androidConfig);
+    await FlutterBackground.FlutterBackground.enableBackgroundExecution();
   }
 
   Future<void> moveToCurrentLocation() async {
@@ -56,7 +103,7 @@ class _MapViewState extends State<MapView> {
 
       // Cập nhật vị trí camera tới vị trí hiện tại của người dùng
       _mapController.animateCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(target: currentLatLng, zoom: 15),
+        CameraPosition(target: currentLatLng, zoom: 20),
       ));
     } catch (e) {
       // Xử lý lỗi nếu không lấy được vị trí
@@ -75,7 +122,7 @@ class _MapViewState extends State<MapView> {
       if (_isDisposed) return; // Check if the widget is disposed
       LatLng loc = LatLng(event.latitude!, event.longitude!);
       _mapController.animateCamera(CameraUpdate.newCameraPosition(
-          CameraPosition(target: loc, zoom: 15)));
+          CameraPosition(target: loc, zoom: 20)));
 
       if (route.isNotEmpty) {
         appendDist = Geolocator.distanceBetween(route.last.latitude,
@@ -102,6 +149,11 @@ class _MapViewState extends State<MapView> {
           startCap: Cap.roundCap,
           endCap: Cap.roundCap,
           color: Colors.deepOrange));
+
+      updateNotification(
+        'Fitness Tracker',
+        'Distance: ${(_dist / 1000).toStringAsFixed(2)} km, Speed: ${_speed.toStringAsFixed(2)} km/h',
+      );
 
       setState(() {});
     });
