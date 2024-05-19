@@ -8,6 +8,8 @@ import 'package:fitness/service/tool_playlist.dart';
 import 'package:fitness/view/meal_planner/meal_planner_view.dart';
 import 'package:fitness/view/workout_tracker/add_schedule_view.dart';
 import 'package:fitness/view/workout_tracker/workour_detail_view.dart';
+import 'package:fitness/view/workout_tracker/workoutSchedule.dart';
+import 'package:fitness/view/workout_tracker/workout_schedule_view.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -277,7 +279,7 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      const MealPlannerView(), // TODO: Add Schedule View
+                                      WorkoutSchedule(), // TODO: Add Schedule View
                                 ),
                               );
                             },
