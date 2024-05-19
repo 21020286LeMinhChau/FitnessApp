@@ -1,7 +1,11 @@
 import 'package:calendar_agenda/calendar_agenda.dart';
 import 'package:fitness/common/color_extension.dart';
 import 'package:fitness/common_widget/food_schedule.dart';
+import 'package:fitness/model/food.dart';
+import 'package:fitness/service/foodStuff.dart';
+import 'package:fitness/service/meal.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class MealScheduleView extends StatefulWidget {
   const MealScheduleView({super.key});
@@ -13,39 +17,97 @@ class MealScheduleView extends StatefulWidget {
 class _MealScheduleViewState extends State<MealScheduleView> {
   @override
   Widget build(BuildContext context) {
-    List breakfastArr = [
-      {
-        "name": "Honey Pancake",
-        "time": "07:00am",
-        "image": "assets/img/honey_pan.png"
-      },
-      {"name": "Coffee", "time": "07:30am", "image": "assets/img/coffee.png"},
-    ];
+    MealStuff mealStuff = MealStuff();
+    FoodStuff foodStuff = FoodStuff();
+    Future<List<dynamic>> getBreakfast(DateTime date) async {
+      var meals = await mealStuff.getMealByCategoryDay("Breakfast", date);
+      List food_list = [];
+      for (var food in meals[0]["food"]) {
+        var foodObj = await foodStuff.getFoodById(food);
 
-    List lunchArr = [
-      {
-        "name": "Chicken Steak",
-        "time": "01:00pm",
-        "image": "assets/img/chicken.png"
-      },
-      {
-        "name": "Milk",
-        "time": "01:20pm",
-        "image": "assets/img/glass-of-milk 1.png"
-      },
-    ];
-    List snacksArr = [
-      {"name": "Orange", "time": "04:30pm", "image": "assets/img/orange.png"},
-      {
-        "name": "Apple Pie",
-        "time": "04:40pm",
-        "image": "assets/img/apple_pie.png"
-      },
-    ];
-    List dinnerArr = [
-      {"name": "Salad", "time": "07:10pm", "image": "assets/img/salad.png"},
-      {"name": "Oatmeal", "time": "08:10pm", "image": "assets/img/oatmeal.png"},
-    ];
+        food_list
+            .add([foodObj['data']['name'], foodObj['data']['image'], date]);
+      }
+      print("breakfast");
+      print(food_list);
+      return food_list;
+    }
+
+    Future<List<dynamic>> getLunch(DateTime date) async {
+      var meals = await mealStuff.getMealByCategoryDay("Lunch", date);
+      List food_list = [];
+      for (var food in meals[0]["food"]) {
+        var foodObj = await foodStuff.getFoodById(food);
+
+        food_list
+            .add([foodObj['data']['name'], foodObj['data']['image'], date]);
+      }
+      print("lunch");
+      print(food_list);
+      return food_list;
+    }
+
+    Future<List<dynamic>> getSnacks(DateTime date) async {
+      var meals = await mealStuff.getMealByCategoryDay("Snack", date);
+      List food_list = [];
+      for (var food in meals[0]["food"]) {
+        var foodObj = await foodStuff.getFoodById(food);
+
+        food_list
+            .add([foodObj['data']['name'], foodObj['data']['image'], date]);
+      }
+      print("snacks");
+      print(food_list);
+      return food_list;
+    }
+
+    Future<List<dynamic>> getDinner(DateTime date) async {
+      var meals = await mealStuff.getMealByCategoryDay("Dinner", date);
+      List food_list = [];
+      for (var food in meals[0]["food"]) {
+        var foodObj = await foodStuff.getFoodById(food);
+
+        food_list
+            .add([foodObj['data']['name'], foodObj['data']['image'], date]);
+      }
+      print("dinner");
+      print(food_list);
+      return food_list;
+    }
+
+    // List breakfastArr = [
+    //   {
+    //     "name": "Honey Pancake",
+    //     "time": "07:00am",
+    //     "image": "assets/img/honey_pan.png"
+    //   },
+    //   {"name": "Coffee", "time": "07:30am", "image": "assets/img/coffee.png"},
+    // ];
+
+    // List lunchArr = [
+    //   {
+    //     "name": "Chicken Steak",
+    //     "time": "01:00pm",
+    //     "image": "assets/img/chicken.png"
+    //   },
+    //   {
+    //     "name": "Milk",
+    //     "time": "01:20pm",
+    //     "image": "assets/img/glass-of-milk 1.png"
+    //   },
+    // ];
+    // List snacksArr = [
+    //   {"name": "Orange", "time": "04:30pm", "image": "assets/img/orange.png"},
+    //   {
+    //     "name": "Apple Pie",
+    //     "time": "04:40pm",
+    //     "image": "assets/img/apple_pie.png"
+    //   },
+    // ];
+    // List dinnerArr = [
+    //   {"name": "Salad", "time": "07:10pm", "image": "assets/img/salad.png"},
+    //   {"name": "Oatmeal", "time": "08:10pm", "image": "assets/img/oatmeal.png"},
+    // ];
 
     List nutritionArr = [
       {
@@ -196,141 +258,337 @@ class _MealScheduleViewState extends State<MealScheduleView> {
                   child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Breakfast",
-                        style: TextStyle(
-                            color: TColor.black,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700),
-                      ),
-                      TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          "${breakfastArr.length} meals | 230 calories",
-                          style: TextStyle(
-                              color: TColor.black,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w400),
+              FutureBuilder<List>(
+                future: getBreakfast(DateTime.now()),
+                builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+                  if (snapshot.hasData) {
+                    return Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Breakfast",
+                                style: TextStyle(
+                                    color: TColor.black,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700),
+                              ),
+                              TextButton(
+                                onPressed: () {},
+                                child: Text(
+                                  "${snapshot.data!.length} meals | 230 calories",
+                                  style: TextStyle(
+                                      color: TColor.black,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400),
+                                ),
+                              )
+                            ],
+                          ),
                         ),
-                      )
-                    ],
-                  )),
-              ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: breakfastArr.length,
-                  itemBuilder: (context, index) {
-                    var hObj = breakfastArr[index];
-                    return FoodSchedule(mObj: hObj);
-                  }),
-              Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Lunch",
-                        style: TextStyle(
-                            color: TColor.black,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700),
-                      ),
-                      TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          "${lunchArr.length} meals | 230 calories",
-                          style: TextStyle(
-                              color: TColor.black,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w400),
+                        ListView.builder(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) {
+                            String formattedDate =
+                                DateFormat('dd/MM/yyyy hh:mm a')
+                                    .format(snapshot.data![index][2]);
+                            Map<String, dynamic> hObj = {
+                              "name": snapshot.data![index][0],
+                              "time": formattedDate,
+                              "image": snapshot.data![index][1]
+                            };
+
+                            return FoodSchedule(mObj: hObj);
+                          },
                         ),
-                      )
-                    ],
-                  )),
-              ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: lunchArr.length,
-                  itemBuilder: (context, index) {
-                    var lObj = lunchArr[index];
-                    return FoodSchedule(mObj: lObj);
-                  }),
-              Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Snacks",
-                        style: TextStyle(
-                            color: TColor.black,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700),
-                      ),
-                      TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          "${snacksArr.length} meals | 230 calories",
-                          style: TextStyle(
-                              color: TColor.black,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w400),
-                        ),
-                      )
-                    ],
-                  )),
-              ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: snacksArr.length,
-                  itemBuilder: (context, index) {
-                    var sObj = snacksArr[index];
-                    return FoodSchedule(mObj: sObj);
-                  }),
-              Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Dinner",
-                        style: TextStyle(
-                            color: TColor.black,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700),
-                      ),
-                      TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          "${dinnerArr.length} meals | 230 calories",
-                          style: TextStyle(
-                              color: TColor.black,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w400),
-                        ),
-                      )
-                    ],
-                  )),
-              ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: dinnerArr.length,
-                  itemBuilder: (context, index) {
-                    var dObj = dinnerArr[index];
-                    return FoodSchedule(mObj: dObj);
-                  }),
-              const SizedBox(
-                height: 10,
+                      ],
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                },
               ),
+              FutureBuilder<List>(
+                future: getLunch(DateTime.now()),
+                builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+                  if (snapshot.hasData) {
+                    return Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Lunch",
+                                style: TextStyle(
+                                    color: TColor.black,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700),
+                              ),
+                              TextButton(
+                                onPressed: () {},
+                                child: Text(
+                                  "${snapshot.data!.length} meals | 230 calories",
+                                  style: TextStyle(
+                                      color: TColor.black,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        ListView.builder(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) {
+                            String formattedDate =
+                                DateFormat('dd/MM/yyyy hh:mm a')
+                                    .format(snapshot.data![index][2]);
+                            Map<String, dynamic> lObj = {
+                              "name": snapshot.data![index][0],
+                              "time": formattedDate,
+                              "image": snapshot.data![index][1]
+                            };
+                            return FoodSchedule(mObj: lObj);
+                          },
+                        ),
+                      ],
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                },
+              ),
+              FutureBuilder<List>(
+                future: getSnacks(DateTime.now()),
+                builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+                  if (snapshot.hasData) {
+                    return Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Snacks",
+                                style: TextStyle(
+                                    color: TColor.black,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700),
+                              ),
+                              TextButton(
+                                onPressed: () {},
+                                child: Text(
+                                  "${snapshot.data!.length} meals | 230 calories",
+                                  style: TextStyle(
+                                      color: TColor.black,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        ListView.builder(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) {
+                            String formattedDate =
+                                DateFormat('dd/MM/yyyy hh:mm a')
+                                    .format(snapshot.data![index][2]);
+                            Map<String, dynamic> sObj = {
+                              "name": snapshot.data![index][0],
+                              "time": formattedDate,
+                              "image": snapshot.data![index][1]
+                            };
+                            return FoodSchedule(mObj: sObj);
+                          },
+                        ),
+                      ],
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                },
+              ),
+              FutureBuilder<List>(
+                future: getDinner(DateTime.now()),
+                builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+                  if (snapshot.hasData) {
+                    return Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Dinner",
+                                style: TextStyle(
+                                    color: TColor.black,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700),
+                              ),
+                              TextButton(
+                                onPressed: () {},
+                                child: Text(
+                                  "${snapshot.data!.length} meals | 230 calories",
+                                  style: TextStyle(
+                                      color: TColor.black,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        ListView.builder(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) {
+                            String formattedDate =
+                                DateFormat('dd/MM/yyyy hh:mm a')
+                                    .format(snapshot.data![index][2]);
+                            Map<String, dynamic> dObj = {
+                              "name": snapshot.data![index][0],
+                              "time": formattedDate,
+                              "image": snapshot.data![index][1]
+                            };
+                            return FoodSchedule(mObj: dObj);
+                          },
+                        ),
+                      ],
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                },
+              ),
+              // Padding(
+              //     padding: const EdgeInsets.symmetric(horizontal: 15),
+              //     child: Row(
+              //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //       children: [
+              //         Text(
+              //           "Lunch",
+              //           style: TextStyle(
+              //               color: TColor.black,
+              //               fontSize: 16,
+              //               fontWeight: FontWeight.w700),
+              //         ),
+              //         TextButton(
+              //           onPressed: () {},
+              //           child: Text(
+              //             "${lunchArr.length} meals | 230 calories",
+              //             style: TextStyle(
+              //                 color: TColor.black,
+              //                 fontSize: 12,
+              //                 fontWeight: FontWeight.w400),
+              //           ),
+              //         )
+              //       ],
+              //     )),
+              // ListView.builder(
+              //     padding: const EdgeInsets.symmetric(horizontal: 15),
+              //     physics: const NeverScrollableScrollPhysics(),
+              //     shrinkWrap: true,
+              //     itemCount: lunchArr.length,
+              //     itemBuilder: (context, index) {
+              //       var lObj = lunchArr[index];
+              //       return FoodSchedule(mObj: lObj);
+              //     }),
+              // Padding(
+              //     padding: const EdgeInsets.symmetric(horizontal: 15),
+              //     child: Row(
+              //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //       children: [
+              //         Text(
+              //           "Snacks",
+              //           style: TextStyle(
+              //               color: TColor.black,
+              //               fontSize: 16,
+              //               fontWeight: FontWeight.w700),
+              //         ),
+              //         TextButton(
+              //           onPressed: () {},
+              //           child: Text(
+              //             "${snacksArr.length} meals | 230 calories",
+              //             style: TextStyle(
+              //                 color: TColor.black,
+              //                 fontSize: 12,
+              //                 fontWeight: FontWeight.w400),
+              //           ),
+              //         )
+              //       ],
+              //     )),
+              // ListView.builder(
+              //     padding: const EdgeInsets.symmetric(horizontal: 15),
+              //     physics: const NeverScrollableScrollPhysics(),
+              //     shrinkWrap: true,
+              //     itemCount: snacksArr.length,
+              //     itemBuilder: (context, index) {
+              //       var sObj = snacksArr[index];
+              //       return FoodSchedule(mObj: sObj);
+              //     }),
+              // Padding(
+              //     padding: const EdgeInsets.symmetric(horizontal: 15),
+              //     child: Row(
+              //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //       children: [
+              //         Text(
+              //           "Dinner",
+              //           style: TextStyle(
+              //               color: TColor.black,
+              //               fontSize: 16,
+              //               fontWeight: FontWeight.w700),
+              //         ),
+              //         TextButton(
+              //           onPressed: () {},
+              //           child: Text(
+              //             "${dinnerArr.length} meals | 230 calories",
+              //             style: TextStyle(
+              //                 color: TColor.black,
+              //                 fontSize: 12,
+              //                 fontWeight: FontWeight.w400),
+              //           ),
+              //         )
+              //       ],
+              //     )),
+              // ListView.builder(
+              //     padding: const EdgeInsets.symmetric(horizontal: 15),
+              //     physics: const NeverScrollableScrollPhysics(),
+              //     shrinkWrap: true,
+              //     itemCount: dinnerArr.length,
+              //     itemBuilder: (context, index) {
+              //       var dObj = dinnerArr[index];
+              //       return FoodSchedule(mObj: dObj);
+              //     }),
+              // const SizedBox(
+              //   height: 10,
+              // ),
               Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: Row(

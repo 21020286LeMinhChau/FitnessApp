@@ -351,7 +351,7 @@ class _MealPlannerViewState extends State<MealPlannerView> {
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton<String>(
                               // value: category,
-                              items: ["Breakfast", "Lunch", "Dinner"]
+                              items: ["Breakfast", "Lunch", "Snack", "Dinner"]
                                   .map((name) => DropdownMenuItem<String>(
                                         value: name,
                                         child: Text(

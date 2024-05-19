@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fitness/common/request_status.dart';
 class MealStuff {
- Future getMealByCategory(String category) async {
+ Future  getMealByCategory(String category) async {
     try {
       var mealCreate = await FirebaseFirestore.instance
           .collection('Meal')
@@ -44,6 +44,24 @@ class MealStuff {
         'data': mealCreate.docs.map((e) => e.data()).toList(),
       };
     } catch (e) {
+      return RequestStatus.request500InternalServerError;
+    }
+  }
+  Future  getMealIdByDateCategory(DateTime date, String category) async {
+    try {
+      DateTime start = DateTime(date.year, date.month, date.day);
+      DateTime end = start.add(Duration(days: 1));
+      var mealCreate = await FirebaseFirestore.instance
+          .collection('Meal')
+          .where('date', isGreaterThanOrEqualTo: start)
+          .where('date', isLessThan: end)
+          .where('category', isEqualTo: category)
+          .get();
+      return {
+        mealCreate.docs.first.id,
+      };
+    } catch (e) {
+      print(e);
       return RequestStatus.request500InternalServerError;
     }
   }
