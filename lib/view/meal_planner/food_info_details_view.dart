@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:fitness/common/color_extension.dart';
 import 'package:fitness/common_widget/food_step_detail_row.dart';
 // import 'package:fitness/common_widget/icon_title_next_row.dart';
 import 'package:fitness/common_widget/ingredient_next_row.dart';
 import 'package:fitness/common_widget/round_button.dart';
 import 'package:fitness/model/food.dart';
+import 'package:fitness/service/meal.dart';
 import 'package:fitness/view/home/activity_tracker_view.dart';
 import 'package:fitness/view/meal_planner/meal_schedule_view.dart';
 // import 'package:fitness/view/workout_tracker/exercises_stpe_details.dart';
@@ -23,6 +26,23 @@ class FoodInfoDetailView extends StatefulWidget {
 }
 
 class _FoodInfoDetailViewState extends State<FoodInfoDetailView> {
+  MealStuff mealStuff = MealStuff();
+  Future<String> getMealId(String category) async {
+    var mealId = await mealStuff.getMealIdByDateCategory(DateTime.now(), category);
+     // Convert Set<String> to String
+    // print(mealId.toList()[0]);
+    return mealId.toList()[0];
+
+  }
+
+  Future<int> addFood(String mealId, String foodId) async {
+    // Add food to meal
+    int noti = await mealStuff.addFoodToMeal(mealId, foodId);
+    print(noti);
+    return noti;
+  }
+
+
   List nutritionArr = [
     {"image": "assets/img/burn.png", "title": "180kCal"},
     {"image": "assets/img/egg.png", "title": "30g fats"},
@@ -101,7 +121,7 @@ class _FoodInfoDetailViewState extends State<FoodInfoDetailView> {
               ),
               actions: [
                 InkWell(
-                  onTap: () {},
+                  onTap: () {getMealId(widget.mObj['name']);},
                   child: Container(
                     margin: const EdgeInsets.all(8),
                     height: 40,
@@ -301,7 +321,7 @@ class _FoodInfoDetailViewState extends State<FoodInfoDetailView> {
                         height: 4,
                       ),
                       ReadMoreText(
-                          'A jumping jack, also known as a star jump and called a side-straddle hop in the US military, is a physical jumping exercise performed by jumping to a position with the legs spread wide A jumping jack, also known as a star jump and called a side-straddle hop in the US military, is a physical jumping exercise performed by jumping to a position with the legs spread wide',
+                          widget.dObj["description"].toString(),
                           trimLines: 4,
                           colorClickableText: TColor.black,
                           trimMode: TrimMode.Line,
@@ -414,11 +434,17 @@ class _FoodInfoDetailViewState extends State<FoodInfoDetailView> {
                       RoundButton(
                           title: "Add to ${widget.mObj['name']} Meal",
                           type: RoundButtonType.bgSGradient ,
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const MealScheduleView()));
+                          onPressed: () async{
+                            String mealID = await getMealId(widget.mObj['name']);
+                            print(mealID);
+                            
+                            print(widget.dObj['id'] );
+                            int noti = await addFood(mealID, widget.dObj['id']);
+                            print(noti);
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (context) => const MealScheduleView()));
                           })
                     ],
                   ),

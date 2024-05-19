@@ -46,6 +46,20 @@ class FoodStuff {
       return RequestStatus.request500InternalServerError;
     }
   }
+  Future getFoodIdByName(String name) async {
+    try {
+      var foodCreate = await FirebaseFirestore.instance
+          .collection('Food')
+          .where('name', isEqualTo: name)
+          .get();
+      return {
+        'status': RequestStatus.request201Created,
+        'data': foodCreate.docs.first.id,
+      };
+    } catch (e) {
+      return RequestStatus.request500InternalServerError;
+    }
+  }
 
 }
 class NutritionStuff {

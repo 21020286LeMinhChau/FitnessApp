@@ -1,5 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fitness/common_widget/meal_recommend_cell.dart';
+import 'package:fitness/model/food.dart';
+import 'package:fitness/service/foodStuff.dart';
+import 'package:fitness/service/meal.dart';
 import 'package:fitness/view/meal_planner/food_info_details_view.dart';
 import 'package:flutter/material.dart';
 import 'package:fitness/common/color_extension.dart';
@@ -16,18 +19,22 @@ class MealFoodDetailsView extends StatefulWidget {
 
 class _MealFoodDetailsViewState extends State<MealFoodDetailsView> {
   TextEditingController txtSearch = TextEditingController();
-
-  Future <List<dynamic>> getFoodByCategory(String category) async {
-    try {
-      var mealCreate = await FirebaseFirestore.instance
-          .collection('Meal')
-          .where('category', isEqualTo: category)
-          .get();
-      return mealCreate.docs.map((e) => e.data()).toList();
-    } catch (e) {
-      return [];
+  MealStuff mealStuff = MealStuff();
+  FoodStuff foodStuff = FoodStuff();
+  Future <List<dynamic>> getPopular(String category) async {
+    var food_list = await mealStuff.getMealByCategory(category);
+    List popularArr = [];
+    
+    for (var food in food_list['data'][0]['food']) {
+      var foodObj = await foodStuff.getFoodById(food);
+      var foodId = await foodStuff.getFoodIdByName(foodObj['data']['name']);
+      // print(foodId['data']);
+      popularArr.add([foodObj['data']['name'], foodObj['data']['image'], foodObj['data']['time'], foodObj['data']['kcal'], foodObj['data']['size'], foodObj['data']['b_image'], foodId['data'], foodObj['data']['description']]);
     }
+    print(popularArr);
+    return popularArr;
   }
+
 
   List popularArr = [
     {
@@ -100,6 +107,7 @@ class _MealFoodDetailsViewState extends State<MealFoodDetailsView> {
   ];
   @override
   Widget build(BuildContext context) {
+
     var media = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -133,7 +141,7 @@ class _MealFoodDetailsViewState extends State<MealFoodDetailsView> {
         ),
         actions: [
           InkWell(
-            onTap: () {},
+            onTap: () {getPopular(widget.eObj["name"].toString());},
             child: Container(
               margin: const EdgeInsets.all(8),
               height: 40,
@@ -272,25 +280,45 @@ class _MealFoodDetailsViewState extends State<MealFoodDetailsView> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: ListView.builder(
-                padding: EdgeInsets.zero,
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: popularArr.length,
-                itemBuilder: (context, index) {
-                  var fObj = popularArr[index] as Map? ?? {};
-                  return InkWell(
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => FoodInfoDetailView( dObj: fObj, mObj: widget.eObj,)));
-                    },
-                  child:PopularMealRow(
-                    mObj: fObj,
-                  )
-                
-                  );
+              child: FutureBuilder<List<dynamic>>(
+                future: getPopular(widget.eObj["name"].toString()),
+                builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+                  if (snapshot.hasData) {
+                    return ListView.builder(
+                      padding: EdgeInsets.zero,
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        Map<String, dynamic> fObj = {
+                          "name": snapshot.data![index][0],
+                          "image": snapshot.data![index][1],
+                          "time": snapshot.data![index][2],
+                          "kcal": snapshot.data![index][3],
+                          "b_image": snapshot.data![index][5], // "b_image": "assets/img/pancake_1.png
+                          "size": snapshot.data![index][4],
+                          "id": snapshot.data![index][6],
+                          "description": snapshot.data![index][7]
+                        };
+                        
+                        return InkWell(
+                          onTap: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => FoodInfoDetailView( dObj: fObj, mObj: widget.eObj,)));
+                          },
+                          child: PopularMealRow(
+                            mObj: fObj,
+                          ),
+                        );
+                      },
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    return CircularProgressIndicator();
+                  }
                 },
               ),
-            ),  
+            ), 
 
             
             
