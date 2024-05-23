@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:fitness/common/color_extension.dart';
 import 'package:fitness/common_widget/round_button.dart';
 import 'package:fitness/common_widget/today_sleep_schedule.dart';
+import 'package:fitness/service/sleep.dart';
 import 'package:fitness/view/sleep_tracker/sleep_schedule_view.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,34 @@ class SleepTrackerView extends StatefulWidget {
 }
 
 class _SleepTrackerViewState extends State<SleepTrackerView> {
+  Sleep  sleep = Sleep();
+  Future getSleep(DateTime date) async {
+    var sleeps = await sleep.getSleepByDate(date);
+    
+    print(1);
+    for (var sleep in sleeps) {
+      sleep['time'] = sleep['time'].toDate();
+      sleep['time'] = sleep['time'].toString();
+      var temp = sleep['time'];
+      if (sleep['time'].length >= 16) {
+        sleep['time'] = sleep['time'].substring(8, 10) + '/' +
+            sleep['time'].substring(5, 7) + '/' +
+            sleep['time'].substring(0, 4) +
+            " " ;
+        if (int.parse(temp.substring(11, 13)) < 12) {
+          sleep['time'] = sleep['time'] +
+              temp.substring(11, 16) +
+              " AM";
+        } else {
+          sleep['time'] = sleep['time'] +
+              temp.substring(11, 16) +
+              " PM";
+        }
+      }
+    }
+    print(sleeps);
+    return sleeps;
+  }
   List<int> showingTooltipOnSpots = [6];
   List todaySleepArr = [
     {
@@ -423,32 +452,38 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
                           fontSize: 16,
                           fontWeight: FontWeight.w700),
                     ),
-                    SizedBox(
-                      height: media.width * 0.6,
-                      child:ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          itemCount: todaySleepArr.length,
-                          itemBuilder: (context, index) {
-                            var fObj = todaySleepArr[index] as Map? ?? {};
-                            return InkWell(
-                              onTap: (){
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (context) =>
-                                //         TodaySleepSchedule(sObj: fObj),
-                                  
-                                
-
-                              },
-                              child: TodaySleepSchedule(
-                                sObj: fObj,
-                                
-                              ),
-                            );
-
-                          }),
-                    ),
+                    FutureBuilder(
+              future: getSleep(DateTime.now()), 
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        if (snapshot.hasData) {
+                         
+                          return ListView.builder(
+                            padding: EdgeInsets.zero,
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (context, index) {
+                              print("má");
+                              print(snapshot.data![index]);
+                              Map<String, dynamic> mObj = {
+                                'name': snapshot.data![index]['name'],
+                                'image': snapshot.data![index]['image'],
+                                'time': snapshot.data![index]['time'],
+                                'duration': 'in 6 hours 22 minutes'
+                              };
+                              print(mObj);
+                              return TodaySleepSchedule(
+                                sObj: mObj,
+                              );
+                            },
+                          );
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else {
+                          return const CircularProgressIndicator();
+                        }
+                      },
+            ),
                     
                     
                    

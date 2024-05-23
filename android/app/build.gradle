@@ -53,6 +53,7 @@ android {
         versionName flutterVersionName
         // resValue "string", "API_KEY", "\"${System.getenv('API_KEY')}\""
         project(':flutter_config').projectDir.getPath() + "/dotenv.gradle"
+        multiDexEnabled true
     }
 
     buildTypes {

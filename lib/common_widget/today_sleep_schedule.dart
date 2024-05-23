@@ -42,11 +42,11 @@ class _TodaySleepScheduleState extends State<TodaySleepSchedule> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "${widget.sObj["name"].toString()}, ${getStringDateToOtherFormate(widget.sObj["time"].toString(), outFormatStr: "h:mm aa")}",
+                "${widget.sObj["name"].toString()}, ${widget.sObj["time"] != null ? getStringDateToOtherFormate(widget.sObj["time"].toString(), outFormatStr: "h:mm aa") : ""}",
                 style: TextStyle(
-                    color: TColor.black,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700),
+                  color: TColor.black,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700),
               ),
               Text(
                 widget.sObj["duration"].toString(),
