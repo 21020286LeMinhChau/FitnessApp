@@ -2,6 +2,8 @@ import 'package:fitness/model/running_property.dart';
 import 'package:flutter/material.dart';
 import 'package:fitness/view/running/map_view.dart' as map_view;
 import 'package:fitness/view/running/running_property_card.dart';
+import 'package:intl/intl.dart';
+import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 class HomeRunning extends StatefulWidget {
   const HomeRunning({Key? key}) : super(key: key);
@@ -11,7 +13,34 @@ class HomeRunning extends StatefulWidget {
 }
 
 class _HomeRunningState extends State<HomeRunning> {
-  late List<RunningProperty> _data;
+  final List<RunningProperty> _data = [
+    RunningProperty(
+        id: 1,
+        // date: "2024-05-19".padLeft(2, '0'),
+        date: DateFormat.yMMMMd('en_US')
+            .format(DateTime.now().subtract(const Duration(days: 1))),
+        duration:
+            "${StopWatchTimer.getDisplayTimeHours(200000 ~/ 6.7)}:${StopWatchTimer.getDisplayTimeMinute(200000 ~/ 6.7)}:${StopWatchTimer.getDisplayTimeSecond(200000 ~/ 6.7)}",
+        speed: 6.7,
+        distance: 200),
+    RunningProperty(
+        id: 3,
+        date: DateFormat.yMMMd('en_US')
+            .format(DateTime.now().subtract(const Duration(days: 1))),
+        duration:
+            "${StopWatchTimer.getDisplayTimeHours(1200000 ~/ 7.3)}:${StopWatchTimer.getDisplayTimeMinute(1200000 ~/ 7.3)}:${StopWatchTimer.getDisplayTimeSecond(1200000 ~/ 7.3)}",
+        speed: 7.3,
+        distance: 1200),
+    RunningProperty(
+        id: 5,
+        date: DateFormat.yMMMd('en_US')
+            .format(DateTime.now().subtract(const Duration(days: 2))),
+        duration:
+            "${StopWatchTimer.getDisplayTimeHours(150000 ~/ 5.1)}:${StopWatchTimer.getDisplayTimeMinute(150000 ~/ 5.1)}:${StopWatchTimer.getDisplayTimeSecond(150000 ~/ 5.1)}",
+        speed: 5.1,
+        distance: 150),
+  ];
+
   List<RunningPropertyCard> _cards = [];
 
   @override
@@ -22,35 +51,25 @@ class _HomeRunningState extends State<HomeRunning> {
 
   void _fetchRunningProperty() async {
     _cards = [];
-    // List<Map<String, dynamic>> _results = await DB.query(RunningProperty.table);
-    // List<Map<String, dynamic>> _results = [];
-    // _data = _results.map((item) => RunningProperty.fromMap(item)).toList();
-    _data = [
-      RunningProperty(id: 1, date: "2024-05-19".padLeft(2, '0'), duration: '1000', speed: 15.1, distance: 20), 
-      RunningProperty(id: 2, date: "2024-05-18".padLeft(2, '0'), duration: '1500', speed: 12.1, distance: 30),
-      RunningProperty(id: 3, date: "2024-05-13".padLeft(2, '0'), duration: '1000', speed: 5.1, distance: 40),
-      RunningProperty(id: 4, date: "2024-05-10".padLeft(2, '0'), duration: '500', speed: 10.3, distance: 5),
-      RunningProperty(id: 5, date: "2024-05-09".padLeft(2, '0'), duration: '400', speed: 10.1, distance: 10),];
 
-
-    for (var element in _data) {
-      _cards.add(RunningPropertyCard(runningProperty: element));
+    // for (var element in _data) {
+    //   _cards.add(RunningPropertyCard(runningProperty: element));
+    // }
+    // for ngược
+    for (var i = _data.length - 1; i >= 0; i--) {
+      _cards.add(RunningPropertyCard(runningProperty: _data[i]));
     }
-
     setState(() {});
   }
 
-  void _updateRunningProperty() async {}
-
-  void _addRunningProperty(RunningProperty en) async {
+  void _addRunningProperty(RunningProperty newRunningProperty) {
     // DB.insert(Entry.table, en);
+    print(1234);
 
-    _updateRunningProperty();
+    _data.add(newRunningProperty);
+    _fetchRunningProperty();
 
-    _cards.add(RunningPropertyCard(runningProperty: en));
     setState(() {});
-
-    // _fetchRunningProperty();
   }
 
   @override

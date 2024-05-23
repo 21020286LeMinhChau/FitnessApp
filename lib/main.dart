@@ -32,24 +32,6 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // Future<void> checkFirstSeen() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   bool _seen = (prefs.getBool('seen') ?? false);
-
-  //   if (_seen) {
-  //     // Navigator.of(context).pushReplacement(
-  //     //     new MaterialPageRoute(builder: (context) => new SignUpView()));
-  //   } else {
-  //     await prefs.setBool('seen', true);
-  //     // Navigator.of(context).pushReplacement(
-  //     //     new MaterialPageRoute(builder: (context) => new WelcomeView()));
-  //   }
-  // }
-
-  // Future<String?> getUserId() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   return prefs.getString('user_id');
-  // }
   Future<Tuple2<bool, String?>> checkFirstSeenAndGetUserId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool _seen = (prefs.getBool('seen') ?? false);

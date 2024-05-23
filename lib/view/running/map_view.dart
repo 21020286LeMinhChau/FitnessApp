@@ -9,6 +9,102 @@ import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 // import 'package:fitness/model/entry.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter_background_service_android/flutter_background_service_android.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
+import 'dart:async';
+import 'dart:io';
+import 'dart:ui';
+
+@pragma('vm:entry-point')
+void onStart(ServiceInstance service) async {
+  // Only available for flutter 3.0.0 and later
+  print('onStart SERVICE 1');
+  DartPluginRegistrant.ensureInitialized();
+  print('onStart SERVICE 2');
+  // For flutter prior to version 3.0.0
+  // We have to register the plugin manually
+
+  // SharedPreferences preferences = await SharedPreferences.getInstance();
+  // await preferences.setString("hello", "world");
+
+  /// OPTIONAL when use custom notification
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+  if (service is AndroidServiceInstance) {
+    service.on('setAsForeground').listen((event) {
+      service.setAsForegroundService();
+    });
+
+    service.on('setAsBackground').listen((event) {
+      service.setAsBackgroundService();
+    });
+  }
+  service.on('stopService').listen((event) {
+    service.stopSelf();
+  });
+  // bring to foreground
+  Timer.periodic(const Duration(milliseconds: 500), (timer) async {
+    if (service is AndroidServiceInstance) {
+      if (await service.isForegroundService()) {
+        /// OPTIONAL for use custom notification
+        /// the notification id must be equals with AndroidConfiguration when you call configure() method.
+        // flutterLocalNotificationsPlugin.show(
+        //   888,
+        //   'COOL SERVICE',
+        //   'Awesome ${DateTime.now()}',
+        //   const NotificationDetails(
+        //     android: AndroidNotificationDetails(
+        //       'my_foreground',
+        //       'MY FOREGROUND SERVICE',
+        //       icon: 'ic_bg_service_small',
+        //       ongoing: true,
+        //     ),
+        //   ),
+        // );
+
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+        await preferences.reload();
+        double distance = preferences.getDouble("distance_running") ?? 0;
+        int time = preferences.getInt("time_running") ?? 0;
+        double speed = preferences.getDouble("speed_running") ?? 0;
+
+        // if you don't using custom notification, uncomment this
+        service.setForegroundNotificationInfo(
+          title: "Running tracking",
+          content:
+              "Distance: ${(distance / 1000).toStringAsFixed(2)} km   Time: ${(time ~/ 1000 + 1).toString()} s   Speed: ${speed.toStringAsFixed(2)} km/h",
+        );
+      }
+    }
+
+    /// you can see this log in logcat
+    print('FLUTTER BACKGROUND SERVICE: ${DateTime.now()}');
+
+    // test using external plugin
+    final deviceInfo = DeviceInfoPlugin();
+    String? device;
+    if (Platform.isAndroid) {
+      final androidInfo = await deviceInfo.androidInfo;
+      device = androidInfo.model;
+    }
+
+    if (Platform.isIOS) {
+      final iosInfo = await deviceInfo.iosInfo;
+      device = iosInfo.model;
+    }
+    //  get time_, distance_, speed_ from shared preferences
+
+    service.invoke(
+      'update',
+      {
+        'device': device,
+      },
+    );
+  });
+}
 
 class MapView extends StatefulWidget {
   // const MapView({super.key});
@@ -18,6 +114,78 @@ class MapView extends StatefulWidget {
 }
 
 class _MapViewState extends State<MapView> {
+  Future<void> initializeService() async {
+    final service = FlutterBackgroundService();
+
+    /// OPTIONAL, using custom notification channel id
+    const AndroidNotificationChannel channel = AndroidNotificationChannel(
+      'my_foreground', // id
+      'MY FOREGROUND SERVICE', // title
+      description:
+          'This channel is used for important notifications.', // description
+      importance: Importance.max, // importance must be at low or higher level
+    );
+
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+        FlutterLocalNotificationsPlugin();
+    if (Platform.isIOS || Platform.isAndroid) {
+      await flutterLocalNotificationsPlugin.initialize(
+        const InitializationSettings(
+          iOS: DarwinInitializationSettings(),
+          android: AndroidInitializationSettings('ic_bg_service_small'),
+        ),
+      );
+    }
+
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channel);
+    print('initializeService SERVICE 3');
+    await service.configure(
+      androidConfiguration: AndroidConfiguration(
+        // this will be executed when app is in foreground or background in separated isolate
+        onStart: onStart,
+
+        // auto start service
+        autoStart: true,
+        isForegroundMode: true,
+
+        notificationChannelId: 'my_foreground',
+        initialNotificationTitle: 'FITNESS APP',
+        initialNotificationContent: 'Start tracking your running now!',
+        foregroundServiceNotificationId: 888,
+      ),
+      iosConfiguration: IosConfiguration(
+        // auto start service
+        autoStart: true,
+
+        // this will be executed when app is in foreground in separated isolate
+        onForeground: onStart,
+
+        // you have to enable background fetch capability on xcode project
+        onBackground: onIosBackground,
+      ),
+    );
+  }
+
+// to ensure this is executed
+// run app from xcode, then from xcode menu, select Simulate Background Fetch
+
+  @pragma('vm:entry-point')
+  Future<bool> onIosBackground(ServiceInstance service) async {
+    WidgetsFlutterBinding.ensureInitialized();
+    DartPluginRegistrant.ensureInitialized();
+
+    // SharedPreferences preferences = await SharedPreferences.getInstance();
+    // await preferences.reload();
+    // final log = preferences.getStringList('log') ?? <String>[];
+    // log.add(DateTime.now().toIso8601String());
+    // await preferences.setStringList('log', log);
+
+    return true;
+  }
+
   final Set<Polyline> polyline = {};
   final Location _location = Location();
   late GoogleMapController _mapController;
@@ -38,12 +206,20 @@ class _MapViewState extends State<MapView> {
   void initState() {
     super.initState();
     _stopWatchTimer.onStartTimer();
+
+    initializeService();
   }
 
   @override
   void dispose() async {
     super.dispose();
     _isDisposed = true;
+    // stop service
+    final service = FlutterBackgroundService();
+    var isRunning = await service.isRunning();
+    if (isRunning) {
+      service.invoke("stopService");
+    }
     await _stopWatchTimer.dispose(); // Need to call dispose function.
   }
 
@@ -56,7 +232,7 @@ class _MapViewState extends State<MapView> {
 
       // Cập nhật vị trí camera tới vị trí hiện tại của người dùng
       _mapController.animateCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(target: currentLatLng, zoom: 15),
+        CameraPosition(target: currentLatLng, zoom: 20),
       ));
     } catch (e) {
       // Xử lý lỗi nếu không lấy được vị trí
@@ -71,11 +247,11 @@ class _MapViewState extends State<MapView> {
 
     double appendDist;
 
-    _location.onLocationChanged.listen((event) {
+    _location.onLocationChanged.listen((event) async {
       if (_isDisposed) return; // Check if the widget is disposed
       LatLng loc = LatLng(event.latitude!, event.longitude!);
       _mapController.animateCamera(CameraUpdate.newCameraPosition(
-          CameraPosition(target: loc, zoom: 15)));
+          CameraPosition(target: loc, zoom: 20)));
 
       if (route.isNotEmpty) {
         appendDist = Geolocator.distanceBetween(route.last.latitude,
@@ -93,6 +269,12 @@ class _MapViewState extends State<MapView> {
       }
       _lastTime = _time;
       route.add(loc);
+
+      //  save time, distance, speed to shared preferences
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      await preferences.setDouble("distance_running", _dist);
+      await preferences.setInt("time_running", _time);
+      await preferences.setDouble("speed_running", _speed);
 
       polyline.add(Polyline(
           polylineId: PolylineId(event.toString()),
