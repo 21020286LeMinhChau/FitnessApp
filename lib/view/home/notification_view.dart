@@ -1,24 +1,73 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 
 import '../../common/color_extension.dart';
+import '../../common/request_status.dart';
 import '../../common_widget/notification_row.dart';
+import '../../model/notification.dart';
+import '../../service/notification_service.dart';
 
 class NotificationView extends StatefulWidget {
-  const NotificationView({super.key});
+  final String userId;
+  const NotificationView({super.key,required this.userId});
+
 
   @override
   State<NotificationView> createState() => _NotificationViewState();
 }
 
 class _NotificationViewState extends State<NotificationView> {
-  List notificationArr = [
-    {"image": "assets/img/Workout1.png", "title": "Hey, it’s time for lunch", "time": "About 1 minutes ago"},
-    {"image": "assets/img/Workout2.png", "title": "Don’t miss your lowerbody workout", "time": "About 3 hours ago"},
-    {"image": "assets/img/Workout3.png", "title": "Hey, let’s add some meals for your b", "time": "About 3 hours ago"},
-    {"image": "assets/img/Workout1.png", "title": "Congratulations, You have finished A..", "time": "29 May"},
-    {"image": "assets/img/Workout2.png", "title": "Hey, it’s time for lunch", "time": "8 April"},
-    {"image": "assets/img/Workout3.png", "title": "Ups, You have missed your Lowerbo...", "time": "8 April"},
-  ];
+  List<AppNotification> notificationArr = [];
+  var logger = Logger();
+
+  @override
+  void initState() {
+    super.initState();
+    // _createRandomNotifications();
+    fetchNotifications();
+  }
+
+
+  Future<void> fetchNotifications() async {
+    NotificationService notificationService = NotificationService();
+    List<AppNotification> notifications = (await notificationService
+        .findNotificationsByUserId(widget.userId))
+        .cast<AppNotification>();
+    setState(() {
+      notificationArr = notifications;
+      logger.d(notificationArr.length);
+    });
+  }
+
+  Future<void> createNotification(AppNotification notification) async {
+    NotificationService notificationService = NotificationService();
+    var result = await notificationService.createNotification(notification);
+    if (result['status'] == RequestStatus.request201Created) {
+      logger.d("Notification created with ID: ${result['data']}");
+      // Optionally refresh the notifications list
+      fetchNotifications();
+    } else {
+      logger.e("Failed to create notification: ${result['data']}");
+    }
+  }
+
+  void _createRandomNotifications() {
+    for (int i = 0; i < 5; i++) {
+      _createRandomNotification();
+    }
+  }
+
+  void _createRandomNotification() {
+    var newNotification = AppNotification(
+      message: "New Notification",
+      image: "assets/img/Workout1.png",
+      userId: widget.userId,
+      type: "info",
+      time: DateTime.now(),
+      state: true,
+    );
+    createNotification(newNotification); // Call method to create the new notification
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,8 +126,8 @@ class _NotificationViewState extends State<NotificationView> {
       body: ListView.separated(
           padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 25),
           itemBuilder: ((context, index) {
-            var nObj = notificationArr[index] as Map? ?? {};
-            return NotificationRow(nObj: nObj);
+            var nObj = notificationArr[index];
+            return NotificationRow(nObj: nObj.toMap());
           }), separatorBuilder: (context, index){
         return Divider(color: TColor.gray.withOpacity(0.5), height: 1, );
       }, itemCount: notificationArr.length),
