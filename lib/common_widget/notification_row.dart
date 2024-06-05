@@ -9,7 +9,8 @@ import '../service/notification_service.dart';
 
 class NotificationRow extends StatefulWidget {
   final Map nObj;
-  const NotificationRow({super.key, required this.nObj});
+  final VoidCallback onDelete;
+  const NotificationRow({super.key, required this.nObj,required this.onDelete});
 
   @override
   _NotificationRowState createState() => _NotificationRowState();
@@ -28,6 +29,24 @@ class _NotificationRowState extends State<NotificationRow> {
     } else {
       logger.e("Failed to update notification: ${result['data']}");
     }
+  }
+
+  Future<void> deleteNotification(String notificationId) async {
+    NotificationService notificationService = NotificationService();
+    var result = await notificationService.deleteNotification(notificationId);
+    if (result['status'] == RequestStatus.request204NoContent) {
+      logger.d("Notification deleted with ID: $notificationId");
+      widget.onDelete();
+    } else {
+      logger.e("Failed to delete notification: $notificationId");
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Khởi tạo giá trị isNew từ widget.nObj['state']
+    isNew = widget.nObj['state'] == true;
   }
 
   @override
@@ -101,8 +120,9 @@ class _NotificationRowState extends State<NotificationRow> {
                           "Delete",
                           style: TextStyle(fontSize: 12),
                         ),
-                        onTap: () {
-                          // Thực hiện xóa notification
+                        onTap: () async {
+                          Navigator.of(context).pop(); // Close the popup menu
+                          await deleteNotification(widget.nObj["id"].toString());
                         },
                       ),
                     ),

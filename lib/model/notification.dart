@@ -35,6 +35,18 @@ class AppNotification{
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
+      'message': message,
+      'image':image,
+      'userId': userId,
+      'type': type,
+      'time': time,
+      'state': state,
+    };
+  }
+
+  Map<String, dynamic> newNotification() {
+    return {
       'message': message,
       'image':image,
       'userId': userId,

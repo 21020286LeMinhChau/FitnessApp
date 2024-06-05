@@ -127,7 +127,10 @@ class _NotificationViewState extends State<NotificationView> {
           padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 25),
           itemBuilder: ((context, index) {
             var nObj = notificationArr[index];
-            return NotificationRow(nObj: nObj.toMap());
+            return NotificationRow(nObj: nObj.toMap(),
+                onDelete: () {
+                  fetchNotifications();
+                });
           }), separatorBuilder: (context, index){
         return Divider(color: TColor.gray.withOpacity(0.5), height: 1, );
       }, itemCount: notificationArr.length),

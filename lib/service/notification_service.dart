@@ -10,7 +10,7 @@ class NotificationService{
     try {
       var notificationCreate = await FirebaseFirestore.instance
           .collection(collectionNotification)
-          .add(notification.toMap());
+          .add(notification.newNotification());
       return {
         'status': RequestStatus.request201Created,
         'data': notificationCreate.id,
