@@ -28,6 +28,26 @@ class _ActivityTrackerViewState extends State<ActivityTrackerView> {
     },
   ];
 
+  final List<Map<String, String>> items = [
+    {
+      "icon": "assets/img/water.png",
+      "value": "8L",
+      "title": "Water Intake",
+    },
+    {
+      "icon": "assets/img/foot.png",
+      "value": "2400",
+      "title": "Foot Steps",
+    },
+    {
+      "icon": "assets/img/water.png",
+      "value": "8L",
+      "title": "Water Intake",
+    },
+    // Thêm các mục khác nếu cần
+  ];
+
+
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
@@ -142,27 +162,26 @@ class _ActivityTrackerViewState extends State<ActivityTrackerView> {
                     const SizedBox(
                       height: 15,
                     ),
-                    const Row(
-                      children: [
-                        Expanded(
-                          child: TodayTargetCell(
-                            icon: "assets/img/water.png",
-                            value: "8L",
-                            title: "Water Intake",
-                          ),
-                        ),
-                        SizedBox(
-                          width: 15,
-                        ),
-                        Expanded(
-                          child: TodayTargetCell(
-                            icon: "assets/img/foot.png",
-                            value: "2400",
-                            title: "Foot Steps",
-                          ),
-                        ),
-                      ],
-                    )
+                    GridView.builder(
+                      padding: EdgeInsets.zero,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2, // Số cột
+                        crossAxisSpacing: 15, // Khoảng cách giữa các cột
+                        mainAxisSpacing: 15, // Khoảng cách giữa các dòng
+                        childAspectRatio: 5 / 2,
+                    ),
+                    itemCount: items.length,
+                    itemBuilder: (context, index) {
+                      var item = items[index];
+                      return TodayTargetCell(
+                        icon: item['icon']!,
+                        value: item['value']!,
+                        title: item['title']!,
+                      );
+                    }
+                    ),
                   ],
                 ),
               ),
