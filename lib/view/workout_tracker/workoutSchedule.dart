@@ -300,5 +300,16 @@ class _AddEventState extends State<AddEvent> {
     if (mounted) {
       Navigator.pop<bool>(context, true);
     }
+    await FirebaseFirestore.instance.collection('workoutPlaylist').add({
+      "title": title,
+      "isFeatured": true,
+      "image": "assets/img/what_3.png",
+      "time":
+          Timestamp.fromDate(_selectedDate).toDate().toString().split(' ')[0],
+      "exercise": 3,
+      "listToolId": ["1", "2", "3"],
+      "listExerciseId": ["1", "2", "3"],
+      "long": "30 mins",
+    });
   }
 }
