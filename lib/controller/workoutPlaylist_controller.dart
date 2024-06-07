@@ -25,8 +25,8 @@ class WorkoutPlaylistController extends GetxController {
       isLoading.value = true;
       final workoutPlaylist =
           await _workoutPlaylistService.getWorkoutPlaylist();
-      print(workoutPlaylist); // print the data
-
+      print("bao nhieu"); // print the data
+      print(workoutPlaylist);
       allWorkoutPlaylist.assignAll(workoutPlaylist);
     } catch (e) {
       print(e);
