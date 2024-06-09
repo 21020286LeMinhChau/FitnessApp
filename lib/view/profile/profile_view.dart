@@ -1,5 +1,6 @@
 import 'package:fitness/view/login/login_view.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../common/color_extension.dart';
@@ -7,6 +8,8 @@ import '../../common_widget/round_button.dart';
 import '../../common_widget/setting_row.dart';
 import '../../common_widget/title_subtitle_cell.dart';
 import 'package:animated_toggle_switch/animated_toggle_switch.dart';
+
+import '../../model/user.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
@@ -16,6 +19,45 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> {
+  final logger = Logger();
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUser();
+  }
+
+  String userId = '';
+  static User user = User();
+  static double BMI = 0;
+
+
+  Future<void> _loadUserId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userId = prefs.getString('user_id') ??
+          'No user ID found'; // If 'id_user' doesn't exist, show a default message
+    });
+  }
+
+  Future<void> fetchUser() async {
+    await _loadUserId();
+    try {
+      User? fetchedUser = await User.getUserById(userId);
+      if (fetchedUser != null) {
+        user = fetchedUser;
+        double height = double.parse(user.height) / 100;
+        BMI = double.parse(user.weight) / (height * height);
+        BMI = double.parse((BMI).toStringAsFixed(1));
+        setState(() {});
+      } else {
+        logger.i('User not found');
+      }
+    }catch (e){
+      logger.e(e);
+    }
+  }
+
   bool positive = false;
 
   List accountArr = [
@@ -39,6 +81,7 @@ class _ProfileViewState extends State<ProfileView> {
     {"image": "assets/img/p_setting.png", "name": "Setting", "tag": "7"},
     {"image": "assets/img/p_logout.png", "name": "Logout", "tag": "8"},
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,7 +128,9 @@ class _ProfileViewState extends State<ProfileView> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(30),
                     child: Image.asset(
-                      "assets/img/u2.png",
+                      user.gender == 'male'
+                          ? 'assets/img/u1.png'
+                          : 'assets/img/u2.png',
                       width: 50,
                       height: 50,
                       fit: BoxFit.cover,
@@ -99,7 +144,7 @@ class _ProfileViewState extends State<ProfileView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Huyen Tram",
+                          '${user.firstName} ${user.lastName}',
                           style: TextStyle(
                             color: TColor.black,
                             fontSize: 14,
@@ -107,7 +152,7 @@ class _ProfileViewState extends State<ProfileView> {
                           ),
                         ),
                         Text(
-                          "Lose a Fat Program",
+                          bodyStatus(BMI),
                           style: TextStyle(
                             color: TColor.gray,
                             fontSize: 12,
@@ -139,29 +184,29 @@ class _ProfileViewState extends State<ProfileView> {
               const SizedBox(
                 height: 15,
               ),
-              const Row(
+              Row(
                 children: [
                   Expanded(
                     child: TitleSubtitleCell(
-                      title: "180cm",
+                      title: user.height,
                       subtitle: "Height",
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 15,
                   ),
                   Expanded(
                     child: TitleSubtitleCell(
-                      title: "65kg",
+                      title: user.weight,
                       subtitle: "Weight",
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 15,
                   ),
                   Expanded(
                     child: TitleSubtitleCell(
-                      title: "22yo",
+                      title: '${DateTime.now().year - DateTime.parse(user.dateOfBirth).year}yo',
                       subtitle: "Age",
                     ),
                   ),
@@ -378,4 +423,15 @@ class _ProfileViewState extends State<ProfileView> {
       ),
     );
   }
+  String bodyStatus(double BMI) {
+    if (BMI < 18.5) {
+      return "Gain weight plan";  // You are underweight
+    }
+    if (BMI >= 18.5 && BMI <= 22.9) {
+      return "Maintain shape";  // You have a normal weight
+    } else {
+      return "Weight loss plan";  // You are overweight
+    }
+  }
+
 }
