@@ -39,35 +39,6 @@ class _NotificationViewState extends State<NotificationView> {
     });
   }
 
-  Future<void> createNotification(AppNotification notification) async {
-    NotificationService notificationService = NotificationService();
-    var result = await notificationService.createNotification(notification);
-    if (result['status'] == RequestStatus.request201Created) {
-      logger.d("Notification created with ID: ${result['data']}");
-      // Optionally refresh the notifications list
-      fetchNotifications();
-    } else {
-      logger.e("Failed to create notification: ${result['data']}");
-    }
-  }
-
-  void _createRandomNotifications() {
-    for (int i = 0; i < 5; i++) {
-      _createRandomNotification();
-    }
-  }
-
-  void _createRandomNotification() {
-    var newNotification = AppNotification(
-      message: "New Notification",
-      image: "assets/img/Workout1.png",
-      userId: widget.userId,
-      type: "info",
-      time: DateTime.now(),
-      state: true,
-    );
-    createNotification(newNotification); // Call method to create the new notification
-  }
 
   @override
   Widget build(BuildContext context) {

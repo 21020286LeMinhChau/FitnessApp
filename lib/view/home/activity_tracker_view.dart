@@ -1,13 +1,18 @@
+import 'package:fitness/model/activity.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 
 import '../../common/color_extension.dart';
 import '../../common_widget/latest_activity_row.dart';
 import '../../common_widget/today_target_cell.dart';
+import '../../service/activity_service.dart';
+import '../show_history/activity_history_view.dart';
 import 'add_target.dart';
 
 class ActivityTrackerView extends StatefulWidget {
-  const ActivityTrackerView({super.key});
+  final String userId;
+  const ActivityTrackerView({super.key,required this.userId});
 
   @override
   State<ActivityTrackerView> createState() => _ActivityTrackerViewState();
@@ -15,19 +20,39 @@ class ActivityTrackerView extends StatefulWidget {
 
 class _ActivityTrackerViewState extends State<ActivityTrackerView> {
   int touchedIndex = -1;
+  final logger = Logger();
 
-  List latestArr = [
-    {
-      "image": "assets/img/pic_4.png",
-      "title": "Drinking 300ml Water",
-      "time": "About 1 minutes ago"
-    },
-    {
-      "image": "assets/img/pic_5.png",
-      "title": "Eat Snack (Fitbar)",
-      "time": "About 3 hours ago"
-    },
-  ];
+  List<Activity> latestArr = [];
+
+  @override
+  void initState() {
+    super.initState();
+    // _createList();
+    fetchActivities();
+  }
+
+  Future<void> fetchActivities() async {
+    ActivityService activityService = ActivityService();
+    List<Activity> activities =
+    (await activityService.findActivitiesByUserId(widget.userId)).cast<Activity>();
+    activities.sort((a, b) {
+      if (a.date != null && b.date != null) {
+        return b.date!.compareTo(a.date!);
+      } else {
+        if (a.date == null && b.date != null) {
+          return 1;
+        } else if (a.date != null && b.date == null) {
+          return -1;
+        } else {
+          return 0;
+        }
+      }
+    });
+    setState(() {
+      latestArr = activities.take(3).toList();
+      logger.d(latestArr.length);
+    });
+  }
 
   final List<Map<String, String>> items = [
     {
@@ -352,7 +377,16 @@ class _ActivityTrackerViewState extends State<ActivityTrackerView> {
                         fontWeight: FontWeight.w700),
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ActivityHistoryView(
+                            userId: widget.userId,
+                          ),
+                        ),
+                      );
+                    },
                     child: Text(
                       "See More",
                       style: TextStyle(
@@ -369,7 +403,7 @@ class _ActivityTrackerViewState extends State<ActivityTrackerView> {
                   shrinkWrap: true,
                   itemCount: latestArr.length,
                   itemBuilder: (context, index) {
-                    var wObj = latestArr[index] as Map? ?? {};
+                    var wObj = latestArr[index].toMap();
                     return LatestActivityRow(wObj: wObj);
                   }),
               SizedBox(
