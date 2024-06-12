@@ -1,5 +1,6 @@
 import 'package:fitness/view/login/login_view.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -10,6 +11,8 @@ import '../../common_widget/title_subtitle_cell.dart';
 import 'package:animated_toggle_switch/animated_toggle_switch.dart';
 
 import '../../model/user.dart';
+import '../show_history/activity_history_view.dart';
+import '../show_history/workout_history_view.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
@@ -30,7 +33,6 @@ class _ProfileViewState extends State<ProfileView> {
   String userId = '';
   static User user = User();
   static double BMI = 0;
-
 
   Future<void> _loadUserId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -53,37 +55,80 @@ class _ProfileViewState extends State<ProfileView> {
       } else {
         logger.i('User not found');
       }
-    }catch (e){
+    } catch (e) {
       logger.e(e);
     }
   }
 
   bool positive = false;
 
-  List accountArr = [
-    {"image": "assets/img/p_personal.png", "name": "Personal Data", "tag": "1"},
-    {"image": "assets/img/p_achi.png", "name": "Achievement", "tag": "2"},
-    {
-      "image": "assets/img/p_activity.png",
-      "name": "Activity History",
-      "tag": "3"
-    },
-    {
-      "image": "assets/img/p_workout.png",
-      "name": "Workout Progress",
-      "tag": "4"
-    }
-  ];
-
-  List otherArr = [
-    {"image": "./assets/img/p_contact.png", "name": "Contact Us", "tag": "5"},
-    {"image": "assets/img/p_privacy.png", "name": "Privacy Policy", "tag": "6"},
-    {"image": "assets/img/p_setting.png", "name": "Setting", "tag": "7"},
-    {"image": "assets/img/p_logout.png", "name": "Logout", "tag": "8"},
-  ];
-
   @override
   Widget build(BuildContext context) {
+    // Define the accountArr list inside the build method to use context
+    List<Map<String, dynamic>> accountArr = [
+      {
+        "image": "assets/img/p_personal.png",
+        "name": "Personal Data",
+        "tag": "1",
+        "onPressed": () {
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (context) => PersonalDataView(userId: userId), // Example
+          //   ),
+          // );
+        },
+      },
+      {
+        "image": "assets/img/p_achi.png",
+        "name": "Achievement",
+        "tag": "2",
+        "onPressed": () {
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (context) => AchievementView(userId: userId), // Example
+          //   ),
+          // );
+        },
+      },
+      {
+        "image": "assets/img/p_activity.png",
+        "name": "Activity History",
+        "tag": "3",
+        "onPressed": () {
+          // Add your navigation logic for Activity History here
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ActivityHistoryView(userId: userId),
+            ),
+          );
+        },
+      },
+      {
+        "image": "assets/img/p_workout.png",
+        "name": "Workout Progress",
+        "tag": "4",
+        "onPressed": () {
+          // Add your navigation logic for Workout Progress here
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => WorkoutHistoryView(userId: userId),
+            ),
+          );
+        },
+      }
+    ];
+
+    List otherArr = [
+      {"image": "./assets/img/p_contact.png", "name": "Contact Us", "tag": "5"},
+      {"image": "assets/img/p_privacy.png", "name": "Privacy Policy", "tag": "6"},
+      {"image": "assets/img/p_setting.png", "name": "Setting", "tag": "7"},
+      {"image": "assets/img/p_logout.png", "name": "Logout", "tag": "8"},
+    ];
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: TColor.white,
@@ -206,7 +251,8 @@ class _ProfileViewState extends State<ProfileView> {
                   ),
                   Expanded(
                     child: TitleSubtitleCell(
-                      title: '${DateTime.now().year - DateTime.parse(user.dateOfBirth).year}yo',
+                      title:
+                      '${DateTime.now().year - DateFormat('dd/MM/yyyy').parse(user.dateOfBirth).year}yo',
                       subtitle: "Age",
                     ),
                   ),
@@ -217,7 +263,7 @@ class _ProfileViewState extends State<ProfileView> {
               ),
               Container(
                 padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                 decoration: BoxDecoration(
                     color: TColor.white,
                     borderRadius: BorderRadius.circular(15),
@@ -247,7 +293,7 @@ class _ProfileViewState extends State<ProfileView> {
                         return SettingRow(
                           icon: iObj["image"].toString(),
                           title: iObj["name"].toString(),
-                          onPressed: () {},
+                          onPressed: iObj["onPressed"] as void Function(),
                         );
                       },
                     )
@@ -259,7 +305,7 @@ class _ProfileViewState extends State<ProfileView> {
               ),
               Container(
                 padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                 decoration: BoxDecoration(
                     color: TColor.white,
                     borderRadius: BorderRadius.circular(15),
@@ -305,7 +351,7 @@ class _ProfileViewState extends State<ProfileView> {
                               dif: 0.0,
                               indicatorSize: Size.square(30.0),
                               animationDuration:
-                                  const Duration(milliseconds: 200),
+                              const Duration(milliseconds: 200),
                               animationCurve: Curves.linear,
                               onChanged: (b) => setState(() => positive = b),
                               iconBuilder: (context, local, global) {
@@ -327,8 +373,8 @@ class _ProfileViewState extends State<ProfileView> {
                                             gradient: LinearGradient(
                                                 colors: TColor.secondaryG),
                                             borderRadius:
-                                                const BorderRadius.all(
-                                                    Radius.circular(50.0)),
+                                            const BorderRadius.all(
+                                                Radius.circular(50.0)),
                                           ),
                                         )),
                                     child,
@@ -365,7 +411,7 @@ class _ProfileViewState extends State<ProfileView> {
               ),
               Container(
                 padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                 decoration: BoxDecoration(
                     color: TColor.white,
                     borderRadius: BorderRadius.circular(15),
@@ -397,19 +443,22 @@ class _ProfileViewState extends State<ProfileView> {
                           icon: iObj["image"].toString(),
                           title: iObj["name"].toString(),
                           onPressed: () async {
-                            // set user_id to null
-                            await SharedPreferences.getInstance().then((prefs) {
-                              prefs.remove("user_id");
-                            });
+                            if (iObj["tag"] == "8") {
+                              // set user_id to null
+                              await SharedPreferences.getInstance().then((prefs) {
+                                prefs.remove("user_id");
+                              });
 
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const LoginView(),
-                              ),
-                              (Route<dynamic> route) =>
-                                  false, // Never allow user to go back
-                            );
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const LoginView(),
+                                ),
+                                    (Route<dynamic> route) => false, // Never allow user to go back
+                              );
+                            } else {
+                              // Add your navigation logic for other items here
+                            }
                           },
                         );
                       },
@@ -423,15 +472,15 @@ class _ProfileViewState extends State<ProfileView> {
       ),
     );
   }
+
   String bodyStatus(double BMI) {
     if (BMI < 18.5) {
-      return "Gain weight plan";  // You are underweight
+      return "Gain weight plan"; // You are underweight
     }
     if (BMI >= 18.5 && BMI <= 22.9) {
-      return "Maintain shape";  // You have a normal weight
+      return "Maintain shape"; // You have a normal weight
     } else {
-      return "Weight loss plan";  // You are overweight
+      return "Weight loss plan"; // You are overweight
     }
   }
-
 }

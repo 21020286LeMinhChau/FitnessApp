@@ -267,7 +267,7 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
                               fontWeight: FontWeight.w700),
                         ),
                         SizedBox(
-                          width: 75,
+                          width: 100,
                           height: 25,
                           child: RoundButton(
                             title: "Check",

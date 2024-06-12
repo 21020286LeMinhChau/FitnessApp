@@ -30,8 +30,8 @@ class IngredientNextRow extends StatelessWidget {
           children: [
             Container(
         
-              height: 70,
-              width: 70,
+              height: 60,
+              width: 60,
               decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
