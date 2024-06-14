@@ -13,6 +13,7 @@ import 'package:animated_toggle_switch/animated_toggle_switch.dart';
 import '../../model/user.dart';
 import '../show_history/activity_history_view.dart';
 import '../show_history/workout_history_view.dart';
+import 'edit_profile.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
@@ -37,8 +38,7 @@ class _ProfileViewState extends State<ProfileView> {
   Future<void> _loadUserId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      userId = prefs.getString('user_id') ??
-          'No user ID found'; // If 'id_user' doesn't exist, show a default message
+      userId = prefs.getString('user_id') ?? 'No user ID found'; // If 'id_user' doesn't exist, show a default message
     });
   }
 
@@ -215,12 +215,12 @@ class _ProfileViewState extends State<ProfileView> {
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
                       onPressed: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => const ActivityTrackerView(),
-                        //   ),
-                        // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const EditProfile(),
+                          ),
+                        );
                       },
                     ),
                   )
@@ -251,8 +251,9 @@ class _ProfileViewState extends State<ProfileView> {
                   ),
                   Expanded(
                     child: TitleSubtitleCell(
-                      title:
-                      '${DateTime.now().year - DateFormat('dd/MM/yyyy').parse(user.dateOfBirth).year}yo',
+                      title: user.dateOfBirth != null
+                          ? '${DateTime.now().year - DateFormat('dd/MM/yyyy').parse(user.dateOfBirth).year}yo'
+                          : 'Loading...',
                       subtitle: "Age",
                     ),
                   ),
