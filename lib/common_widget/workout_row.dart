@@ -19,11 +19,11 @@ class WorkoutRow extends StatelessWidget {
         child: Row(
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.circular(30),
+              borderRadius: BorderRadius.circular(15),
               child: Image.asset(
                 wObj["image"].toString(),
-                width: 60,
-                height: 60,
+                width: 50,
+                height: 50,
                 fit: BoxFit.cover,
               ),
             ),

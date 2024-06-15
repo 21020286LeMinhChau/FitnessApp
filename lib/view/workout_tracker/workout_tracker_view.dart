@@ -267,7 +267,7 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
                               fontWeight: FontWeight.w700),
                         ),
                         SizedBox(
-                          width: 75,
+                          width: 100,
                           height: 25,
                           child: RoundButton(
                             title: "Check",
@@ -418,46 +418,46 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
 
   List<LineChartBarData> get lineBarsData1 => [
         lineChartBarData1_1,
-        lineChartBarData1_2,
+        // lineChartBarData1_2,
       ];
 
   LineChartBarData get lineChartBarData1_1 => LineChartBarData(
         isCurved: true,
-        color: TColor.white,
-        barWidth: 4,
+        color: TColor.white.withOpacity(0.9),
+        barWidth: 2,
         isStrokeCapRound: true,
         dotData: FlDotData(show: false),
         belowBarData: BarAreaData(show: false),
         spots: const [
-          FlSpot(1, 35),
-          FlSpot(2, 70),
-          FlSpot(3, 40),
-          FlSpot(4, 80),
-          FlSpot(5, 25),
-          FlSpot(6, 70),
-          FlSpot(7, 35),
-        ],
-      );
-
-  LineChartBarData get lineChartBarData1_2 => LineChartBarData(
-        isCurved: true,
-        color: TColor.white.withOpacity(0.5),
-        barWidth: 2,
-        isStrokeCapRound: true,
-        dotData: FlDotData(show: false),
-        belowBarData: BarAreaData(
-          show: false,
-        ),
-        spots: const [
-          FlSpot(1, 80),
-          FlSpot(2, 50),
-          FlSpot(3, 90),
-          FlSpot(4, 40),
-          FlSpot(5, 80),
-          FlSpot(6, 35),
+          FlSpot(1, 27),
+          FlSpot(2, 45),
+          FlSpot(3, 65),
+          FlSpot(4, 30),
+          FlSpot(5, 50),
+          FlSpot(6, 75),
           FlSpot(7, 60),
         ],
       );
+
+  // LineChartBarData get lineChartBarData1_2 => LineChartBarData(
+  //       isCurved: true,
+  //       color: TColor.white.withOpacity(0.5),
+  //       barWidth: 2,
+  //       isStrokeCapRound: true,
+  //       dotData: FlDotData(show: false),
+  //       belowBarData: BarAreaData(
+  //         show: false,
+  //       ),
+  //       spots: const [
+  //         FlSpot(1, 80),
+  //         FlSpot(2, 50),
+  //         FlSpot(3, 90),
+  //         FlSpot(4, 40),
+  //         FlSpot(5, 80),
+  //         FlSpot(6, 35),
+  //         FlSpot(7, 60),
+  //       ],
+  //     );
 
   SideTitles get rightTitles => SideTitles(
         getTitlesWidget: rightTitleWidgets,
@@ -470,22 +470,22 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
     String text;
     switch (value.toInt()) {
       case 0:
-        text = '0%';
+        text = '0 cal';
         break;
       case 20:
-        text = '20%';
+        text = '300';
         break;
       case 40:
-        text = '40%';
+        text = '600';
         break;
       case 60:
-        text = '60%';
+        text = '900';
         break;
       case 80:
-        text = '80%';
+        text = '1200';
         break;
       case 100:
-        text = '100%';
+        text = '1500';
         break;
       default:
         return Container();

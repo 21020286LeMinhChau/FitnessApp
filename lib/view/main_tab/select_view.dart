@@ -28,7 +28,7 @@ class SelectView extends StatelessWidget {
                       Border.all(color: TColor.primaryColor1.withOpacity(0.5)),
                   boxShadow: [
                     BoxShadow(
-                      color: TColor.primaryColor1.withOpacity(0.3),
+                      color: TColor.primaryColor1.withOpacity(0.45),
                       spreadRadius: 5,
                       blurRadius: 7,
                       offset: const Offset(0, 3), // changes position of shadow
@@ -48,7 +48,7 @@ class SelectView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Image.asset(
-                        'assets/img/sleep.png',
+                        'assets/img/heart.png',
                         width: 100,
                         height: 100,
                       ),
@@ -57,54 +57,6 @@ class SelectView extends StatelessWidget {
                       ),
                       const Text(
                         'Heart BPM Tracker',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 15),
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border:
-                      Border.all(color: TColor.primaryColor1.withOpacity(0.5)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: TColor.primaryColor1.withOpacity(0.4),
-                      spreadRadius: 5,
-                      blurRadius: 7,
-                      offset: const Offset(0, 3), // changes position of shadow
-                    ),
-                  ],
-                ),
-                child: InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const BloodPressureView(),
-                      ),
-                    );
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Image.asset(
-                        'assets/img/workout.webp',
-                        width: 100,
-                        height: 100,
-                      ),
-                      SizedBox(
-                        width: media.width * 0.05,
-                      ),
-                      const Text(
-                        'Blood Pressure Tracker',
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 16,
@@ -136,6 +88,54 @@ class SelectView extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
+                        builder: (context) => const BloodPressureView(),
+                      ),
+                    );
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Image.asset(
+                        'assets/img/blood.png',
+                        width: 100,
+                        height: 100,
+                      ),
+                      SizedBox(
+                        width: media.width * 0.05,
+                      ),
+                      const Text(
+                        'Blood Pressure Tracker',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 15),
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border:
+                      Border.all(color: TColor.primaryColor1.withOpacity(0.5)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: TColor.primaryColor1.withOpacity(0.55),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: const Offset(0, 3), // changes position of shadow
+                    ),
+                  ],
+                ),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
                         builder: (context) => const O2MeasureView(),
                       ),
                     );
@@ -144,7 +144,7 @@ class SelectView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Image.asset(
-                        'assets/img/sleep.png',
+                        'assets/img/spo2.png',
                         width: 100,
                         height: 100,
                       ),
@@ -220,7 +220,7 @@ class SelectView extends StatelessWidget {
                         color: TColor.primaryColor1.withOpacity(0.5)),
                     boxShadow: [
                       BoxShadow(
-                        color: TColor.primaryColor1.withOpacity(0.7),
+                        color: TColor.primaryColor1.withOpacity(0.65),
                         spreadRadius: 5,
                         blurRadius: 7,
                         offset:

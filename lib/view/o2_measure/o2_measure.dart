@@ -331,45 +331,43 @@ class _BpO2View extends State<O2MeasureDialog> {
   double _calculateRedAvg(CameraImage img) {
     //  use yuv420
 
-    // final int width = img.width;
-    // final int height = img.height;
-    // print(width.toString() + " : " + height.toString());
-    // double redAvg = 0;
-    // try {
-    //   for (int i = 0; i < width; i++) {
-    //     for (int j = 0; j < height; j++) {
-    //       final int pixelIndex =
-    //           (j * width + i) * 4; // 4 bytes per pixel in BGRA8888
-    //       final int red = img.planes[0]
-    //           .bytes[pixelIndex + 1]; // Red channel is at index 1 in BGRA
-    //       redAvg += red;
-    //     }
-    //   }
-    // } catch (e) {
-    //   print(e);
-    // }
-    // print(redAvg / (width * height));
-    // return redAvg / (width * height);
-    return Random().nextInt(56) + 200.0;
+    final int width = img.width;
+    final int height = img.height;
+    print(width.toString() + " : " + height.toString());
+    double redAvg = 0;
+    try {
+      for (int i = 0; i < width; i++) {
+        for (int j = 0; j < height; j++) {
+          final int pixelIndex =
+              (j * width + i) * 4; // 4 bytes per pixel in BGRA8888
+          final int red = img.planes[0]
+              .bytes[pixelIndex + 1]; // Red channel is at index 1 in BGRA
+          redAvg += red;
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
+    print(redAvg / (width * height));
+    return redAvg / (width * height);
   }
 
   double _calculateBlueAvg(CameraImage img) {
-    // final int width = img.width;
-    // final int height = img.height;
+    final int width = img.width;
+    final int height = img.height;
 
-    // double blueAvg = 0;
-    // for (int i = 0; i < width; i++) {
-    //   for (int j = 0; j < height; j++) {
-    //     final int pixelIndex =
-    //         (j * width + i) * 4; // 4 bytes per pixel in BGRA8888
-    //     final int blue = img
-    //         .planes[0].bytes[pixelIndex]; // Blue channel is at index 0 in BGRA
-    //     blueAvg += blue;
-    //   }
-    // }
+    double blueAvg = 0;
+    for (int i = 0; i < width; i++) {
+      for (int j = 0; j < height; j++) {
+        final int pixelIndex =
+            (j * width + i) * 4; // 4 bytes per pixel in BGRA8888
+        final int blue = img
+            .planes[0].bytes[pixelIndex]; // Blue channel is at index 0 in BGRA
+        blueAvg += blue;
+      }
+    }
 
-    // return blueAvg / (width * height);
-    return Random().nextInt(56) + 1.0;
+    return blueAvg / (width * height);
   }
 
   // double _calculateFft(List<double> data, int count, double samplingFreq) {

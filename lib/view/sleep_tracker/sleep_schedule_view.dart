@@ -1,6 +1,7 @@
 import 'package:calendar_agenda/calendar_agenda.dart';
 import 'package:fitness/common/color_extension.dart';
 import 'package:fitness/common_widget/today_sleep_schedule.dart';
+import 'package:fitness/service/sleep.dart';
 import 'package:fitness/view/sleep_tracker/sleep_add_alarm_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -21,25 +22,57 @@ class _SleepScheduleViewState extends State<SleepScheduleView> {
     super.initState();
     selectedDate = DateTime.now();
   }
-
+  Sleep  sleep = Sleep();
+  Future getSleep(DateTime date) async {
+    var sleeps = await sleep.getSleepByDate(date);
+    
+    print(1);
+    for (var sleep in sleeps) {
+      sleep['time'] = sleep['time'].toDate();
+      sleep['time'] = sleep['time'].toString();
+      var temp = sleep['time'];
+      if (sleep['time'].length >= 16) {
+        sleep['time'] = sleep['time'].substring(8, 10) + '/' +
+            sleep['time'].substring(5, 7) + '/' +
+            sleep['time'].substring(0, 4) +
+            " " ;
+        if (int.parse(temp.substring(11, 13)) < 12) {
+          sleep['time'] = sleep['time'] +
+              temp.substring(11, 16) +
+              " AM";
+        } else {
+          sleep['time'] = sleep['time'] +
+              temp.substring(11, 16) +
+              " PM";
+        }
+      }
+    }
+    print(sleeps);
+    return sleeps;
+  }
+  void changeDate(DateTime newDate) {
+    setState(() {
+      selectedDate = newDate;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context);
 
-    List todaySleepArr = [
-      {
-        "name": "Bedtime",
-        "image": "assets/img/bed.png",
-        "time": "13/04/2024 09:00 PM",
-        "duration": "in 6 hours 22 minutes"
-      },
-      {
-        "name": "Alarm",
-        "image": "assets/img/alaarm.png",
-        "time": "02/06/2023 05:10 AM",
-        "duration": "in 14 hours 30 minutes"
-      },
-    ];
+    // List todaySleepArr = [
+    //   {
+    //     "name": "Bedtime",
+    //     "image": "assets/img/bed.png",
+    //     "time": "13/04/2024 09:00 PM",
+    //     "duration": "in 6 hours 22 minutes"
+    //   },
+    //   {
+    //     "name": "Alarm",
+    //     "image": "assets/img/alaarm.png",
+    //     "time": "02/06/2023 05:10 AM",
+    //     "duration": "in 14 hours 30 minutes"
+    //   },
+    // ];
     return Scaffold(
         appBar: AppBar(
           backgroundColor: TColor.white,
@@ -72,7 +105,7 @@ class _SleepScheduleViewState extends State<SleepScheduleView> {
           ),
           actions: [
             InkWell(
-              onTap: () {},
+              onTap: () {getSleep(DateTime.now()); print(3);},
               child: Container(
                 margin: const EdgeInsets.all(8),
                 height: 40,
@@ -203,7 +236,7 @@ class _SleepScheduleViewState extends State<SleepScheduleView> {
               lastDate: DateTime.now().add(const Duration(days: 60)),
 
               onDateSelected: (date) {
-                selectedDate = date;
+                changeDate(date);
               },
               selectedDayLogo: Container(
                 width: double.maxFinite,
@@ -217,20 +250,53 @@ class _SleepScheduleViewState extends State<SleepScheduleView> {
                 ),
               ),
             ),
-            Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    itemCount: todaySleepArr.length,
-                    itemBuilder: (context, index) {
-                      var kObj = todaySleepArr[index] as Map? ?? {};
-                      return InkWell(
-                        child: TodaySleepSchedule(
-                          sObj: kObj,
-                        ),
-                      );
-                    })),
+            FutureBuilder(
+              future: getSleep(selectedDate), 
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        if (snapshot.hasData) {
+                         
+                          return ListView.builder(
+                            padding: EdgeInsets.zero,
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (context, index) {
+                              print("má");
+                              print(snapshot.data![index]);
+                              Map<String, dynamic> mObj = {
+                                'name': snapshot.data![index]['name'],
+                                'image': snapshot.data![index]['image'],
+                                'time': snapshot.data![index]['time'],
+                                'duration': 'in 6 hours 22 minutes'
+                              };
+                              print(mObj);
+                              return TodaySleepSchedule(
+                                sObj: mObj,
+                              );
+                            },
+                          );
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else {
+                          return const CircularProgressIndicator();
+                        }
+                      },
+            )
+            ,
+            // Padding(
+            //     padding: const EdgeInsets.symmetric(horizontal: 20),
+            //     child: ListView.builder(
+            //         scrollDirection: Axis.vertical,
+            //         shrinkWrap: true,
+            //         itemCount: todaySleepArr.length,
+            //         itemBuilder: (context, index) {
+            //           var kObj = todaySleepArr[index] as Map? ?? {};
+            //           return InkWell(
+            //             child: TodaySleepSchedule(
+            //               sObj: kObj,
+            //             ),
+            //           );
+            //         })),
             Container(
                 width: double.maxFinite,
                 margin:
