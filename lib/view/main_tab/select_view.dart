@@ -28,7 +28,7 @@ class SelectView extends StatelessWidget {
                       Border.all(color: TColor.primaryColor1.withOpacity(0.5)),
                   boxShadow: [
                     BoxShadow(
-                      color: TColor.primaryColor1.withOpacity(0.7),
+                      color: TColor.primaryColor1.withOpacity(0.3),
                       spreadRadius: 5,
                       blurRadius: 7,
                       offset: const Offset(0, 3), // changes position of shadow
@@ -76,7 +76,7 @@ class SelectView extends StatelessWidget {
                       Border.all(color: TColor.primaryColor1.withOpacity(0.5)),
                   boxShadow: [
                     BoxShadow(
-                      color: TColor.primaryColor1.withOpacity(0.7),
+                      color: TColor.primaryColor1.withOpacity(0.4),
                       spreadRadius: 5,
                       blurRadius: 7,
                       offset: const Offset(0, 3), // changes position of shadow
@@ -96,7 +96,7 @@ class SelectView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Image.asset(
-                        'assets/img/sleep.png',
+                        'assets/img/workout.webp',
                         width: 100,
                         height: 100,
                       ),
@@ -124,7 +124,7 @@ class SelectView extends StatelessWidget {
                       Border.all(color: TColor.primaryColor1.withOpacity(0.5)),
                   boxShadow: [
                     BoxShadow(
-                      color: TColor.primaryColor1.withOpacity(0.7),
+                      color: TColor.primaryColor1.withOpacity(0.5),
                       spreadRadius: 5,
                       blurRadius: 7,
                       offset: const Offset(0, 3), // changes position of shadow
@@ -172,7 +172,7 @@ class SelectView extends StatelessWidget {
                         color: TColor.primaryColor1.withOpacity(0.5)),
                     boxShadow: [
                       BoxShadow(
-                        color: TColor.primaryColor2.withOpacity(0.5),
+                        color: TColor.primaryColor2.withOpacity(0.6),
                         spreadRadius: 5,
                         blurRadius: 7,
                         offset:
@@ -220,7 +220,7 @@ class SelectView extends StatelessWidget {
                         color: TColor.primaryColor1.withOpacity(0.5)),
                     boxShadow: [
                       BoxShadow(
-                        color: TColor.primaryColor1.withOpacity(0.6),
+                        color: TColor.primaryColor1.withOpacity(0.7),
                         spreadRadius: 5,
                         blurRadius: 7,
                         offset:
@@ -268,7 +268,7 @@ class SelectView extends StatelessWidget {
                       Border.all(color: TColor.primaryColor1.withOpacity(0.5)),
                   boxShadow: [
                     BoxShadow(
-                      color: TColor.primaryColor1.withOpacity(0.7),
+                      color: TColor.primaryColor1.withOpacity(0.8),
                       spreadRadius: 5,
                       blurRadius: 7,
                       offset: const Offset(0, 3), // changes position of shadow

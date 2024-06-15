@@ -1,9 +1,6 @@
-import 'package:animated_toggle_switch/animated_toggle_switch.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fitness/common/color_extension.dart';
 import 'package:fitness/model/workout_playlist_model.dart';
 import 'package:flutter/material.dart';
-import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 import 'package:load_switch/load_switch.dart';
 
 class UpcomingWorkoutRow extends StatefulWidget {

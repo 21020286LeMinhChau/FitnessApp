@@ -1,6 +1,4 @@
 // TODO Implement this library.
-import 'dart:math';
-
 import 'package:fitness/model/excersise.dart';
 import 'package:fitness/model/setExercise.dart';
 import 'package:fitness/service/excercise_playlist.dart';
